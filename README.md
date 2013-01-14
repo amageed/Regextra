@@ -15,13 +15,37 @@ Currently I'm working on the ***PasswordRulesBuilder*** class, which provides a 
 - min/max length
 - character ranges (i.e., `[a-z]`)
 
+Example usage
+--------------
+The following code generates a pattern to enforce a password of 8-25 characters that requires at least one lowercase letter in the range of `a-z` and at least one number in the range of `0-9`.
+
+    var builder = new PasswordRulesBuilder().MinLength(8)
+                                            .MaxLength(25)
+                                            .Range('a', 'z')
+                                            .Range('0', '9');
+    var pattern = builder.ToPattern();
+    if (Regex.IsMatch(input, pattern))
+    {
+        // password meets requirements
+    }
+    else
+    {
+        // password is no good
+    }
+
 There are more enhancements in mind... off the top of my head:
+- overload the Range method to accept numbers (currently chars only), and/or specify ranges as a single string with a dash "0-9"
 - negation to disallow characters
 - more control over the minimum occurrences required for a rule (i.e., "at least 2 digits")
 - providing access to the list of individual rules and their purpose in plain text to be able to intelligently inform a user of what rule they're not satisfying
 - better error handling
 - more tests
+- samples
+- documentation, of course
+- Nuget package
 
 What this project is not
 ------------------------
 This project isn't an attempt to write a fluent API for regular expressions in general. Learning regex is a better option IMO :)
+
+Regextra is Copyright © 2013 [Ahmad Mageed](http://softwareninjaneer.com) under the [MIT license](https://github.com/amageed/Regextra/blob/master/LICENSE).
