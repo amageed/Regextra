@@ -106,8 +106,21 @@ namespace Tests
         {
             var builder = new PasswordRulesBuilder().Range('a', 'z')
                                                     .Range('0', '9');
+            
             var pattern = builder.ToPattern();
             
+            Regex.IsMatch(input, pattern).ShouldBe(isValid);
+        }
+
+        [TestCase(true, "abc")]
+        [TestCase(false, "a")]
+        public void Input_Must_Meet_MinLength_Rule(bool isValid, string input)
+        {
+            var builder = new PasswordRulesBuilder().MinLength(2)
+                                                    .Range('a', 'z');
+
+            var pattern = builder.ToPattern();
+
             Regex.IsMatch(input, pattern).ShouldBe(isValid);
         }
     }

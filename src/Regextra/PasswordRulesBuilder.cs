@@ -50,7 +50,7 @@ namespace Regextra
                 return "";
             }
 
-            if (ValidateLength(_minLength, "Minimum"))
+            if (ValidateLength(_minLength, "Minimum") && _minLength == 0)
             {
                 _minLength = _rules.Count;
             }
