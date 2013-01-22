@@ -22,13 +22,23 @@ namespace Tests
         }
 
         [Test]
-        public void Can_Add_Range_Rule()
+        public void Can_Specify_Range_Rule()
         {
             var builder = new PasswordRulesBuilder().Range('a', 'z');
             
             var pattern = builder.ToPattern();
 
             pattern.ShouldBe("^(?=.*[a-z]).{1,}$");
+        }
+
+        [Test]
+        public void Can_Specify_Excluded_Range_Rule()
+        {
+            var builder = new PasswordRulesBuilder().ExcludesRange('a', 'z');
+
+            var pattern = builder.ToPattern();
+
+            pattern.ShouldBe("^(?!.*[a-z]).{1,}$");
         }
 
         [Test]
@@ -39,6 +49,16 @@ namespace Tests
             var pattern = builder.ToPattern();
 
             pattern.ShouldBe("^(?=.*[abc]).{1,}$");
+        }
+
+        [Test]
+        public void Can_Specify_Excluded_Characters()
+        {
+            var builder = new PasswordRulesBuilder().ExcludesCharacters("abc");
+
+            var pattern = builder.ToPattern();
+
+            pattern.ShouldBe("^(?!.*[abc]).{1,}$");
         }
 
         [TestCase("a-z")]
@@ -128,9 +148,23 @@ namespace Tests
         [TestCase(true, "ABC")]
         [TestCase(false, "a1b2c3")]
         [TestCase(false, "abc")]
-        public void Input_Must_Not_Contain_LowerCase_Letters(bool isValid, string input)
+        public void Input_Excludes_LowerCase_Letters_From_A_To_Z(bool isValid, string input)
         {
             var builder = new PasswordRulesBuilder().ExcludesRange('a', 'z');
+
+            var pattern = builder.ToPattern();
+
+            Regex.IsMatch(input, pattern).ShouldBe(isValid);
+        }
+
+        [TestCase(true, "123")]
+        [TestCase(true, "ABC")]
+        [TestCase(true, "xYz")]
+        [TestCase(false, "a1b2c3")]
+        [TestCase(false, "abc")]
+        public void Input_Must_Not_Contain_LowerCase_Letters_ABC(bool isValid, string input)
+        {
+            var builder = new PasswordRulesBuilder().ExcludesCharacters("abc");
 
             var pattern = builder.ToPattern();
 

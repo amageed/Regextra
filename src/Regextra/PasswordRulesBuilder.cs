@@ -15,13 +15,16 @@ namespace Regextra
 
         public PasswordRulesBuilder ContainsCharacters(string characters)
         {
-            // remove all dashes and place one at the end to avoid an unintended range
-            if (_dashMatcher.IsMatch(characters))
-            {
-                characters = _dashMatcher.Replace(characters, "") + "-";
-            }
-            
+            SanitizeDashes(ref characters);
             var rule = new Rule(String.Format("[{0}]", String.Join("", characters)));
+            _rules.Add(rule);
+            return this;
+        }
+
+        public PasswordRulesBuilder ExcludesCharacters(string characters)
+        {
+            SanitizeDashes(ref characters);
+            var rule = new NegativeRule(String.Format("[{0}]", String.Join("", characters)));
             _rules.Add(rule);
             return this;
         }
@@ -93,6 +96,15 @@ namespace Regextra
             }
 
             return true;
+        }
+
+        private void SanitizeDashes(ref string characters)
+        {
+            // remove all dashes and place one at the end to avoid an unintended range
+            if (_dashMatcher.IsMatch(characters))
+            {
+                characters = _dashMatcher.Replace(characters, "") + "-";
+            }
         }
     }
 }
