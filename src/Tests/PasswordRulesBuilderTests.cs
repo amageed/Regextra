@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
-using Shouldly;
-using Regextra;
 using System.Text.RegularExpressions;
+using NUnit.Framework;
+using Regextra;
+using Shouldly;
 
 namespace Tests
 {
@@ -118,6 +118,31 @@ namespace Tests
         {
             var builder = new PasswordRulesBuilder().MinLength(2)
                                                     .Range('a', 'z');
+
+            var pattern = builder.ToPattern();
+
+            Regex.IsMatch(input, pattern).ShouldBe(isValid);
+        }
+
+        [TestCase(true, "123")]
+        [TestCase(true, "ABC")]
+        [TestCase(false, "a1b2c3")]
+        [TestCase(false, "abc")]
+        public void Input_Must_Not_Contain_LowerCase_Letters(bool isValid, string input)
+        {
+            var builder = new PasswordRulesBuilder().ExcludesRange('a', 'z');
+
+            var pattern = builder.ToPattern();
+
+            Regex.IsMatch(input, pattern).ShouldBe(isValid);
+        }
+
+        [TestCase(true, "abc")]
+        [TestCase(false, "a1b2c3")]
+        [TestCase(false, "123")]
+        public void Input_Must_Not_Contain_Numbers(bool isValid, string input) 
+        {
+            var builder = new PasswordRulesBuilder().ExcludesRange('0', '9');
 
             var pattern = builder.ToPattern();
 

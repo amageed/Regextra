@@ -9,7 +9,7 @@ namespace Regextra
     public class PasswordRulesBuilder
     {
         private readonly Regex _dashMatcher = new Regex(@"\\?-");
-        private IList<string> _rules = new List<string>();
+        private IList<IRule> _rules = new List<IRule>();
         private int _minLength;
         private int _maxLength;
 
@@ -20,14 +20,24 @@ namespace Regextra
             {
                 characters = _dashMatcher.Replace(characters, "") + "-";
             }
-            _rules.Add(String.Format("[{0}]", String.Join("", characters)));
+            
+            var rule = new Rule(String.Format("[{0}]", String.Join("", characters)));
+            _rules.Add(rule);
             return this;
         }
 
         public PasswordRulesBuilder Range(char start, char end)
         {
             // TODO: decide whether to throw an exception if start >= end ... handled by Regex check for now
-            _rules.Add(String.Format("[{0}-{1}]", start, end));
+            var rule = new Rule(String.Format("[{0}-{1}]", start, end));
+            _rules.Add(rule);
+            return this;
+        }
+
+        public PasswordRulesBuilder ExcludesRange(char start, char end)
+        {
+            var rule = new NegativeRule(String.Format("[{0}-{1}]", start, end));
+            _rules.Add(rule);
             return this;
         }
 
@@ -56,7 +66,7 @@ namespace Regextra
             }
             ValidateLength(_maxLength, "Maximum");
 
-            var rules = String.Join("", _rules.Select(FormatRequirement));
+            var rules = String.Join("", _rules.Select(r => r.Requirement));
             var builder = new StringBuilder("^" + rules);
             string range = String.Format("{0},{1}",
                                _minLength,
@@ -73,11 +83,6 @@ namespace Regextra
         public override string ToString()
         {
             return ToPattern();
-        }
-
-        private string FormatRequirement(string input)
-        {
-            return "(?=.*" + input + ")";
         }
 
         private bool ValidateLength(int length, string type)
