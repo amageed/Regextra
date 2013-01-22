@@ -17,12 +17,12 @@ Currently I'm working on the ***PasswordRulesBuilder*** class, which provides a 
 
 Example usage
 --------------
-The following code generates a pattern to enforce a password of 8-25 characters that requires at least one lowercase letter in the range of `a-z` and at least one number in the range of `0-9`.
+The following code generates a pattern to enforce a password of 8-25 characters that requires at least one lowercase letter in the range of `a-z` and numbers excluding those in the range of `0-4` (i.e., numbers in the `5-9` range are acceptable).
 
     var builder = new PasswordRulesBuilder().MinLength(8)
                                             .MaxLength(25)
-                                            .Range('a', 'z')
-                                            .Range('0', '9');
+                                            .IncludesRange('a', 'z')
+                                            .ExcludesRange('0', '4');
     var pattern = builder.ToPattern();
     if (Regex.IsMatch(input, pattern))
     {
