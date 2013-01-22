@@ -29,7 +29,7 @@ namespace Regextra
             return this;
         }
 
-        public PasswordRulesBuilder Range(char start, char end)
+        public PasswordRulesBuilder IncludesRange(char start, char end)
         {
             // TODO: decide whether to throw an exception if start >= end ... handled by Regex check for now
             var rule = new Rule(String.Format("[{0}-{1}]", start, end));

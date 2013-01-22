@@ -24,7 +24,7 @@ namespace Tests
         [Test]
         public void Can_Specify_Range_Rule()
         {
-            var builder = new PasswordRulesBuilder().Range('a', 'z');
+            var builder = new PasswordRulesBuilder().IncludesRange('a', 'z');
             
             var pattern = builder.ToPattern();
 
@@ -88,7 +88,7 @@ namespace Tests
         public void Minimum_Length_Is_Two_When_Two_Rules_Exist()
         {
             var builder = new PasswordRulesBuilder().ContainsCharacters("a")
-                                                    .Range('1', '9');
+                                                    .IncludesRange('1', '9');
 
             var pattern = builder.ToPattern();
 
@@ -100,7 +100,7 @@ namespace Tests
         {
             var builder = new PasswordRulesBuilder().MinLength(1)
                                                     .ContainsCharacters("a")
-                                                    .Range('1', '9');
+                                                    .IncludesRange('1', '9');
 
             var exception = Should.Throw<ArgumentException>(() => builder.ToPattern());
             exception.Message.ShouldStartWith("Minimum length");
@@ -111,7 +111,7 @@ namespace Tests
         {
             var builder = new PasswordRulesBuilder().MaxLength(1)
                                                     .ContainsCharacters("a")
-                                                    .Range('1', '9');
+                                                    .IncludesRange('1', '9');
 
             var exception = Should.Throw<ArgumentException>(() => builder.ToPattern());
             exception.Message.ShouldStartWith("Maximum length");
@@ -124,8 +124,8 @@ namespace Tests
         [TestCase(false, "1234")]
         public void Input_Must_Contain_A_Lowercase_Letter_And_A_Number(bool isValid, string input)
         {
-            var builder = new PasswordRulesBuilder().Range('a', 'z')
-                                                    .Range('0', '9');
+            var builder = new PasswordRulesBuilder().IncludesRange('a', 'z')
+                                                    .IncludesRange('0', '9');
             
             var pattern = builder.ToPattern();
             
@@ -137,7 +137,7 @@ namespace Tests
         public void Input_Must_Meet_MinLength_Rule(bool isValid, string input)
         {
             var builder = new PasswordRulesBuilder().MinLength(2)
-                                                    .Range('a', 'z');
+                                                    .IncludesRange('a', 'z');
 
             var pattern = builder.ToPattern();
 
