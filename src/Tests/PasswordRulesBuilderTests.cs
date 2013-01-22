@@ -148,5 +148,31 @@ namespace Tests
 
             Regex.IsMatch(input, pattern).ShouldBe(isValid);
         }
+
+        [TestCase(true, "012345")]
+        [TestCase(false, "12")]
+        [TestCase(false, "6789")]
+        public void Input_Of_Min_Length_3_Contains_Numbers_Between_1_to_5(bool isValid, string input)
+        {
+            var builder = new PasswordRulesBuilder().MinLength(3)
+                                                    .ExcludesRange('6', '9');
+
+            var pattern = builder.ToPattern();
+
+            Regex.IsMatch(input, pattern).ShouldBe(isValid);
+        }
+
+        [TestCase(true, 'A', 'Z')]
+        [TestCase(false, ' ', '/')]
+        // Space to forward slash range: 32-47, includes [ !"#$%&'()*+,-./]
+        public void Input_Excludes_Range_Of_Space_To_Forward_Slash(bool isValid, char startChar, char endChar)
+        {
+            var builder = new PasswordRulesBuilder().ExcludesRange(' ', '/');
+
+            var pattern = builder.ToPattern();
+            var range = Enumerable.Range((int)startChar, (int)endChar + 1).Select(i => ((char)i).ToString());
+
+            range.All(c => Regex.IsMatch(c, pattern)).ShouldBe(isValid);
+        }
     }
 }
