@@ -33,9 +33,20 @@ The following code generates a pattern to enforce a password of 8-25 characters 
         // password is no good
     }
 
+Current rule methods
+--------------------
+
+- *MinLength(int length)*
+- *MaxLength(int length)*
+- *ContainsCharacters(string characters)*
+- *ExcludesCharacters(string characters)*
+- *IncludesRange(char start, char end)*
+- *ExcludesRange(char start, char end)*
+- *ToPattern()* - generates the regex pattern based on the specified rules
+- *ToString()* - overloaded to call ToPattern()
+
 There are more enhancements in mind... off the top of my head:
 - overload the Range method to accept numbers (currently chars only), and/or specify ranges as a single string with a dash "0-9"
-- negation to disallow characters
 - more control over the minimum occurrences required for a rule (i.e., "at least 2 digits")
 - providing access to the list of individual rules and their purpose in plain text to be able to intelligently inform a user of what rule they're not satisfying
 - better error handling
