@@ -13,13 +13,10 @@ namespace Regextra
         private int _minLength;
         private int _maxLength;
 
-        public PasswordRulesBuilder ContainsCharacters(string characters, int minOccurrence = 1)
+        public PasswordRulesBuilder ContainsCharacters(string characters)
         {
             SanitizeDashes(ref characters);
-            var rule = new Rule(String.Format("[{0}]", String.Join("", characters)))
-            {
-                MinimumOccurrence = minOccurrence
-            };
+            var rule = new Rule(String.Format("[{0}]", String.Join("", characters)));
             _rules.Add(rule);
             return this;
         }
@@ -32,13 +29,10 @@ namespace Regextra
             return this;
         }
 
-        public PasswordRulesBuilder IncludesRange(char start, char end, int minOccurrence = 1)
+        public PasswordRulesBuilder IncludesRange(char start, char end)
         {
             // TODO: decide whether to throw an exception if start >= end ... handled by Regex check for now
-            var rule = new Rule(String.Format("[{0}-{1}]", start, end)) 
-            {
-                MinimumOccurrence = minOccurrence
-            };
+            var rule = new Rule(String.Format("[{0}-{1}]", start, end));
             _rules.Add(rule);
             return this;
         }
@@ -59,6 +53,27 @@ namespace Regextra
         public PasswordRulesBuilder MaxLength(int length)
         {
             _maxLength = length;
+            return this;
+        }
+
+        public PasswordRulesBuilder WithMinimumOccurrenceOf(int length)
+        {
+            if (length < 1)
+            {
+                throw new ArgumentOutOfRangeException("length", "Minimum occurrence must be greater than zero.");
+            }
+
+            var lastRule = _rules.LastOrDefault();
+            if (lastRule == null)
+            {
+                throw new InvalidOperationException("Rules are empty.");
+            }
+            if (lastRule.GetType() != typeof(Rule))
+            {
+                throw new InvalidOperationException("Minimum occurrence can only be applied to positive character or range rules.");
+            }
+
+            ((Rule)lastRule).MinimumOccurrence = length;
             return this;
         }
 

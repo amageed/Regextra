@@ -209,6 +209,32 @@ namespace Tests
             range.All(c => Regex.IsMatch(c, pattern)).ShouldBe(isValid);
         }
 
+        [Test]
+        public void Throws_ArgumentOutOfRangeException_With_Minimum_Occurrence_Less_Than_One()
+        {
+            var builder = new PasswordRulesBuilder().ContainsCharacters("abc");
+
+            var exception = Should.Throw<ArgumentOutOfRangeException>(() => builder.WithMinimumOccurrenceOf(0));
+            exception.ParamName.ShouldBe("length");
+        }
+
+        [Test]
+        public void Throws_InvalidOperationException_With_Minimum_Occurrence_On_Empty_Rules()
+        {
+            var builder = new PasswordRulesBuilder();
+
+            var exception = Should.Throw<InvalidOperationException>(() => builder.WithMinimumOccurrenceOf(1));
+            exception.Message.ShouldBe("Rules are empty.");
+        }
+
+        [Test]
+        public void Throws_InvalidOperationException_With_Minimum_Occurrence_On_Negative_Rule()
+        {
+            var builder = new PasswordRulesBuilder().ExcludesCharacters("abc");
+
+            var exception = Should.Throw<InvalidOperationException>(() => builder.WithMinimumOccurrenceOf(1));
+        }
+
         [TestCase(true, "abc12")]
         [TestCase(true, "abc123")]
         [TestCase(true, "a1b2c3")]
@@ -216,7 +242,8 @@ namespace Tests
         [TestCase(false, "abc")]
         public void Input_Contains_At_Least_Two_Digits_In_Specified_Range(bool isValid, string input)
         {
-            var builder = new PasswordRulesBuilder().IncludesRange('0', '9', 2);
+            var builder = new PasswordRulesBuilder().IncludesRange('0', '9')
+                                                    .WithMinimumOccurrenceOf(2);
 
             var pattern = builder.ToPattern();
 
@@ -230,7 +257,8 @@ namespace Tests
         [TestCase(false, "abc")]
         public void Input_Contains_At_Least_Two_Digits_In_Specified_Characters(bool isValid, string input)
         {
-            var builder = new PasswordRulesBuilder().ContainsCharacters("0123456789", 2);
+            var builder = new PasswordRulesBuilder().ContainsCharacters("0123456789")
+                                                    .WithMinimumOccurrenceOf(2);
 
             var pattern = builder.ToPattern();
 
