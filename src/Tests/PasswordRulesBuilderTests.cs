@@ -208,5 +208,33 @@ namespace Tests
 
             range.All(c => Regex.IsMatch(c, pattern)).ShouldBe(isValid);
         }
+
+        [TestCase(true, "abc12")]
+        [TestCase(true, "abc123")]
+        [TestCase(true, "a1b2c3")]
+        [TestCase(false, "abc1")]
+        [TestCase(false, "abc")]
+        public void Input_Contains_At_Least_Two_Digits_In_Specified_Range(bool isValid, string input)
+        {
+            var builder = new PasswordRulesBuilder().IncludesRange('0', '9', 2);
+
+            var pattern = builder.ToPattern();
+
+            Regex.IsMatch(input, pattern).ShouldBe(isValid);
+        }
+
+        [TestCase(true, "abc12")]
+        [TestCase(true, "abc123")]
+        [TestCase(true, "a1b2c3")]
+        [TestCase(false, "abc1")]
+        [TestCase(false, "abc")]
+        public void Input_Contains_At_Least_Two_Digits_In_Specified_Characters(bool isValid, string input)
+        {
+            var builder = new PasswordRulesBuilder().ContainsCharacters("0123456789", 2);
+
+            var pattern = builder.ToPattern();
+
+            Regex.IsMatch(input, pattern).ShouldBe(isValid);
+        }
     }
 }

@@ -13,10 +13,13 @@ namespace Regextra
         private int _minLength;
         private int _maxLength;
 
-        public PasswordRulesBuilder ContainsCharacters(string characters)
+        public PasswordRulesBuilder ContainsCharacters(string characters, int minOccurrence = 1)
         {
             SanitizeDashes(ref characters);
-            var rule = new Rule(String.Format("[{0}]", String.Join("", characters)));
+            var rule = new Rule(String.Format("[{0}]", String.Join("", characters)))
+            {
+                MinimumOccurrence = minOccurrence
+            };
             _rules.Add(rule);
             return this;
         }
@@ -29,10 +32,13 @@ namespace Regextra
             return this;
         }
 
-        public PasswordRulesBuilder IncludesRange(char start, char end)
+        public PasswordRulesBuilder IncludesRange(char start, char end, int minOccurrence = 1)
         {
             // TODO: decide whether to throw an exception if start >= end ... handled by Regex check for now
-            var rule = new Rule(String.Format("[{0}-{1}]", start, end));
+            var rule = new Rule(String.Format("[{0}-{1}]", start, end)) 
+            {
+                MinimumOccurrence = minOccurrence
+            };
             _rules.Add(rule);
             return this;
         }
