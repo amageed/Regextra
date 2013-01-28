@@ -47,7 +47,7 @@ Available methods
 - *ExcludesRange(char start, char end)*
 - *WithMinimumOccurrenceOf(int length)* - available for positive rules only (i.e., *ContainsCharacters* and *IncludesRange*)
 - *ToPattern()* - generates the regex pattern based on the specified rules
-- *ToString()* - overloaded to call ToPattern()
+- *ToString()* - overridden to call ToPattern()
 
 Coming Soon
 -----------
