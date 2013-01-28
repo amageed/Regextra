@@ -12,20 +12,10 @@ namespace Tests
     public class PasswordRulesBuilderTests
     {
         [Test]
-        public void Can_Initialize()
-        {
-            var builder = new PasswordRulesBuilder();
-
-            var pattern = builder.ToPattern();
-            
-            pattern.ShouldBeEmpty();
-        }
-
-        [Test]
         public void Can_Specify_Range_Rule()
         {
-            var builder = new PasswordRulesBuilder().IncludesRange('a', 'z');
-            
+            var builder = PasswordRulesBuilder.That.IncludesRange('a', 'z');
+
             var pattern = builder.ToPattern();
 
             pattern.ShouldBe("^(?=.*[a-z]).{1,}$");
@@ -34,7 +24,7 @@ namespace Tests
         [Test]
         public void Can_Specify_Excluded_Range_Rule()
         {
-            var builder = new PasswordRulesBuilder().ExcludesRange('a', 'z');
+            var builder = PasswordRulesBuilder.Which.ExcludesRange('a', 'z');
 
             var pattern = builder.ToPattern();
 
@@ -44,7 +34,7 @@ namespace Tests
         [Test]
         public void Can_Specify_Contained_Characters()
         {
-            var builder = new PasswordRulesBuilder().ContainsCharacters("abc");
+            var builder = PasswordRulesBuilder.That.ContainsCharacters("abc");
 
             var pattern = builder.ToPattern();
 
@@ -54,7 +44,7 @@ namespace Tests
         [Test]
         public void Can_Specify_Excluded_Characters()
         {
-            var builder = new PasswordRulesBuilder().ExcludesCharacters("abc");
+            var builder = PasswordRulesBuilder.That.ExcludesCharacters("abc");
 
             var pattern = builder.ToPattern();
 
@@ -67,7 +57,7 @@ namespace Tests
         [TestCase("a--z")]
         public void Dash_In_Contained_Characters_Placed_At_End_To_Avoid_Unintended_Range(string characters)
         {
-            var builder = new PasswordRulesBuilder().ContainsCharacters(characters);
+            var builder = PasswordRulesBuilder.That.ContainsCharacters(characters);
 
             var pattern = builder.ToPattern();
 
@@ -77,7 +67,7 @@ namespace Tests
         [Test]
         public void Minimum_Length_Is_One_When_One_Rule_Exists()
         {
-            var builder = new PasswordRulesBuilder().ContainsCharacters("a");
+            var builder = PasswordRulesBuilder.That.ContainsCharacters("a");
 
             var pattern = builder.ToPattern();
 
@@ -87,8 +77,8 @@ namespace Tests
         [Test]
         public void Minimum_Length_Is_Two_When_Two_Rules_Exist()
         {
-            var builder = new PasswordRulesBuilder().ContainsCharacters("a")
-                                                    .IncludesRange('1', '9');
+            var builder = PasswordRulesBuilder.That.ContainsCharacters("a")
+                                                   .IncludesRange('1', '9');
 
             var pattern = builder.ToPattern();
 
@@ -98,9 +88,9 @@ namespace Tests
         [Test]
         public void Throws_ArgumentException_When_Assigned_Minimum_Length_Is_Less_Than_Specified_Rules_Count()
         {
-            var builder = new PasswordRulesBuilder().MinLength(1)
-                                                    .ContainsCharacters("a")
-                                                    .IncludesRange('1', '9');
+            var builder = PasswordRulesBuilder.With.MinLength(1)
+                                                   .ContainsCharacters("a")
+                                                   .IncludesRange('1', '9');
 
             var exception = Should.Throw<ArgumentException>(() => builder.ToPattern());
             exception.Message.ShouldStartWith("Minimum length");
@@ -109,9 +99,9 @@ namespace Tests
         [Test]
         public void Throws_ArgumentException_When_Assigned_Maximum_Length_Is_Less_Than_Specified_Rules_Count()
         {
-            var builder = new PasswordRulesBuilder().MaxLength(1)
-                                                    .ContainsCharacters("a")
-                                                    .IncludesRange('1', '9');
+            var builder = PasswordRulesBuilder.With.MaxLength(1)
+                                                   .ContainsCharacters("a")
+                                                   .IncludesRange('1', '9');
 
             var exception = Should.Throw<ArgumentException>(() => builder.ToPattern());
             exception.Message.ShouldStartWith("Maximum length");
@@ -124,11 +114,11 @@ namespace Tests
         [TestCase(false, "1234")]
         public void Input_Must_Contain_A_Lowercase_Letter_And_A_Number(bool isValid, string input)
         {
-            var builder = new PasswordRulesBuilder().IncludesRange('a', 'z')
-                                                    .IncludesRange('0', '9');
-            
+            var builder = PasswordRulesBuilder.That.IncludesRange('a', 'z')
+                                                   .IncludesRange('0', '9');
+
             var pattern = builder.ToPattern();
-            
+
             Regex.IsMatch(input, pattern).ShouldBe(isValid);
         }
 
@@ -136,8 +126,8 @@ namespace Tests
         [TestCase(false, "a")]
         public void Input_Must_Meet_MinLength_Rule(bool isValid, string input)
         {
-            var builder = new PasswordRulesBuilder().MinLength(2)
-                                                    .IncludesRange('a', 'z');
+            var builder = PasswordRulesBuilder.With.MinLength(2)
+                                                   .IncludesRange('a', 'z');
 
             var pattern = builder.ToPattern();
 
@@ -150,7 +140,7 @@ namespace Tests
         [TestCase(false, "abc")]
         public void Input_Excludes_LowerCase_Letters_From_A_To_Z(bool isValid, string input)
         {
-            var builder = new PasswordRulesBuilder().ExcludesRange('a', 'z');
+            var builder = PasswordRulesBuilder.That.ExcludesRange('a', 'z');
 
             var pattern = builder.ToPattern();
 
@@ -164,7 +154,7 @@ namespace Tests
         [TestCase(false, "abc")]
         public void Input_Must_Not_Contain_LowerCase_Letters_ABC(bool isValid, string input)
         {
-            var builder = new PasswordRulesBuilder().ExcludesCharacters("abc");
+            var builder = PasswordRulesBuilder.That.ExcludesCharacters("abc");
 
             var pattern = builder.ToPattern();
 
@@ -174,9 +164,9 @@ namespace Tests
         [TestCase(true, "abc")]
         [TestCase(false, "a1b2c3")]
         [TestCase(false, "123")]
-        public void Input_Must_Not_Contain_Numbers(bool isValid, string input) 
+        public void Input_Must_Not_Contain_Numbers(bool isValid, string input)
         {
-            var builder = new PasswordRulesBuilder().ExcludesRange('0', '9');
+            var builder = PasswordRulesBuilder.That.ExcludesRange('0', '9');
 
             var pattern = builder.ToPattern();
 
@@ -188,8 +178,8 @@ namespace Tests
         [TestCase(false, "6789")]
         public void Input_Of_Min_Length_3_Contains_Numbers_Between_1_to_5(bool isValid, string input)
         {
-            var builder = new PasswordRulesBuilder().MinLength(3)
-                                                    .ExcludesRange('6', '9');
+            var builder = PasswordRulesBuilder.With.MinLength(3)
+                                                   .ExcludesRange('6', '9');
 
             var pattern = builder.ToPattern();
 
@@ -201,7 +191,7 @@ namespace Tests
         // Space to forward slash range: 32-47, includes [ !"#$%&'()*+,-./]
         public void Input_Excludes_Range_Of_Space_To_Forward_Slash(bool isValid, char startChar, char endChar)
         {
-            var builder = new PasswordRulesBuilder().ExcludesRange(' ', '/');
+            var builder = PasswordRulesBuilder.That.ExcludesRange(' ', '/');
 
             var pattern = builder.ToPattern();
             var range = Enumerable.Range((int)startChar, (int)endChar + 1).Select(i => ((char)i).ToString());
@@ -212,27 +202,10 @@ namespace Tests
         [Test]
         public void Throws_ArgumentOutOfRangeException_With_Minimum_Occurrence_Less_Than_One()
         {
-            var builder = new PasswordRulesBuilder().ContainsCharacters("abc");
+            var builder = PasswordRulesBuilder.That.ContainsCharacters("abc");
 
             var exception = Should.Throw<ArgumentOutOfRangeException>(() => builder.WithMinimumOccurrenceOf(0));
             exception.ParamName.ShouldBe("length");
-        }
-
-        [Test]
-        public void Throws_InvalidOperationException_With_Minimum_Occurrence_On_Empty_Rules()
-        {
-            var builder = new PasswordRulesBuilder();
-
-            var exception = Should.Throw<InvalidOperationException>(() => builder.WithMinimumOccurrenceOf(1));
-            exception.Message.ShouldBe("Rules are empty.");
-        }
-
-        [Test]
-        public void Throws_InvalidOperationException_With_Minimum_Occurrence_On_Negative_Rule()
-        {
-            var builder = new PasswordRulesBuilder().ExcludesCharacters("abc");
-
-            var exception = Should.Throw<InvalidOperationException>(() => builder.WithMinimumOccurrenceOf(1));
         }
 
         [TestCase(true, "abc12")]
@@ -242,8 +215,8 @@ namespace Tests
         [TestCase(false, "abc")]
         public void Input_Contains_At_Least_Two_Digits_In_Specified_Range(bool isValid, string input)
         {
-            var builder = new PasswordRulesBuilder().IncludesRange('0', '9')
-                                                    .WithMinimumOccurrenceOf(2);
+            var builder = PasswordRulesBuilder.That.IncludesRange('0', '9')
+                                                   .WithMinimumOccurrenceOf(2);
 
             var pattern = builder.ToPattern();
 
@@ -257,8 +230,8 @@ namespace Tests
         [TestCase(false, "abc")]
         public void Input_Contains_At_Least_Two_Digits_In_Specified_Characters(bool isValid, string input)
         {
-            var builder = new PasswordRulesBuilder().ContainsCharacters("0123456789")
-                                                    .WithMinimumOccurrenceOf(2);
+            var builder = PasswordRulesBuilder.That.ContainsCharacters("0123456789")
+                                                   .WithMinimumOccurrenceOf(2);
 
             var pattern = builder.ToPattern();
 

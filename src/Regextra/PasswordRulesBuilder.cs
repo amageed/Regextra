@@ -6,14 +6,32 @@ using System.Text.RegularExpressions;
 
 namespace Regextra
 {
-    public class PasswordRulesBuilder
+    public static class PasswordRulesBuilder
+    {
+        public static IPassphraseRegex That
+        {
+            get { return new PasswordRulesBuilderImpl(); }
+        }
+
+        public static IPassphraseRegex Which
+        {
+            get { return new PasswordRulesBuilderImpl(); }
+        }
+
+        public static IPassphraseRegex With
+        {
+            get { return new PasswordRulesBuilderImpl(); }
+        }
+    }
+
+    internal class PasswordRulesBuilderImpl : IPassphraseRegex, IPassphraseRegexOptions
     {
         private readonly Regex _dashMatcher = new Regex(@"\\?-");
         private IList<IRule> _rules = new List<IRule>();
         private int _minLength;
         private int _maxLength;
 
-        public PasswordRulesBuilder ContainsCharacters(string characters)
+        public IPassphraseRegexOptions ContainsCharacters(string characters)
         {
             SanitizeDashes(ref characters);
             var rule = new Rule(String.Format("[{0}]", String.Join("", characters)));
@@ -21,7 +39,7 @@ namespace Regextra
             return this;
         }
 
-        public PasswordRulesBuilder ExcludesCharacters(string characters)
+        public IPassphraseRegex ExcludesCharacters(string characters)
         {
             SanitizeDashes(ref characters);
             var rule = new NegativeRule(String.Format("[{0}]", String.Join("", characters)));
@@ -29,7 +47,7 @@ namespace Regextra
             return this;
         }
 
-        public PasswordRulesBuilder IncludesRange(char start, char end)
+        public IPassphraseRegexOptions IncludesRange(char start, char end)
         {
             // TODO: decide whether to throw an exception if start >= end ... handled by Regex check for now
             var rule = new Rule(String.Format("[{0}-{1}]", start, end));
@@ -37,43 +55,34 @@ namespace Regextra
             return this;
         }
 
-        public PasswordRulesBuilder ExcludesRange(char start, char end)
+        public IPassphraseRegex ExcludesRange(char start, char end)
         {
             var rule = new NegativeRule(String.Format("[{0}-{1}]", start, end));
             _rules.Add(rule);
             return this;
         }
 
-        public PasswordRulesBuilder MinLength(int length)
+        public IPassphraseRegex MinLength(int length)
         {
             _minLength = length;
             return this;
         }
 
-        public PasswordRulesBuilder MaxLength(int length)
+        public IPassphraseRegex MaxLength(int length)
         {
             _maxLength = length;
             return this;
         }
 
-        public PasswordRulesBuilder WithMinimumOccurrenceOf(int length)
+        public IPassphraseRegex WithMinimumOccurrenceOf(int length)
         {
             if (length < 1)
             {
                 throw new ArgumentOutOfRangeException("length", "Minimum occurrence must be greater than zero.");
             }
 
-            var lastRule = _rules.LastOrDefault();
-            if (lastRule == null)
-            {
-                throw new InvalidOperationException("Rules are empty.");
-            }
-            if (lastRule.GetType() != typeof(Rule))
-            {
-                throw new InvalidOperationException("Minimum occurrence can only be applied to positive character or range rules.");
-            }
-
-            ((Rule)lastRule).MinimumOccurrence = length;
+            var lastRule = (Rule)_rules.Last();
+            lastRule.MinimumOccurrence = length;
             return this;
         }
 

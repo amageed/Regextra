@@ -39,6 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IPassphraseRegex.cs" />
+    <Compile Include="IPassphraseRegexOptions.cs" />
     <Compile Include="IRule.cs" />
     <Compile Include="NegativeRule.cs" />
     <Compile Include="PasswordRulesBuilder.cs" />
