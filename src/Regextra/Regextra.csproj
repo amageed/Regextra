@@ -43,7 +43,7 @@
     <Compile Include="IPassphraseRegexOptions.cs" />
     <Compile Include="IRule.cs" />
     <Compile Include="NegativeRule.cs" />
-    <Compile Include="PasswordRulesBuilder.cs" />
+    <Compile Include="PassphraseRegex.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rule.cs" />
   </ItemGroup>
