@@ -49,6 +49,12 @@ Available methods
 - *ToPattern()* - generates the regex pattern based on the specified rules
 - *ToString()* - overridden to call ToPattern()
 
+Initialization is achieved via either of the following 3 properties so that you're free to construct the builder with code that flows nicely with the first method you decided to use:
+
+- *That* -> e.g. *PassphraseRegex.That.IncludesRange(...)*
+- *Which* -> e.g. *PassphraseRegex.Which.ExcludesCharacters(...)*
+- *With* -> e.g. *PassphraseRegex.With.MinLength(...)*
+
 Coming Soon
 -----------
 There are more enhancements in mind... off the top of my head:
