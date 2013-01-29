@@ -10,6 +10,6 @@ namespace Regextra
         IPassphraseRegex ExcludesRange(char start, char end);
         IPassphraseRegex MinLength(int length);
         IPassphraseRegex MaxLength(int length);
-        string ToPattern();
+        PatternResult ToPattern();
     }
 }

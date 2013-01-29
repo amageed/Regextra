@@ -27,12 +27,14 @@ namespace Regextra
     internal class PassphraseRegexBuilder : IPassphraseRegex, IPassphraseRegexOptions
     {
         private readonly Regex _dashMatcher = new Regex(@"\\?-");
+        private string _error;
         private IList<IRule> _rules = new List<IRule>();
         private int _minLength;
         private int _maxLength;
 
         public IPassphraseRegexOptions ContainsCharacters(string characters)
         {
+            if (String.IsNullOrEmpty(characters)) throw new ArgumentException("Characters should not be null or empty", "characters");
             SanitizeDashes(ref characters);
             var rule = new Rule(String.Format("[{0}]", String.Join("", characters)));
             _rules.Add(rule);
@@ -41,6 +43,7 @@ namespace Regextra
 
         public IPassphraseRegex ExcludesCharacters(string characters)
         {
+            if (String.IsNullOrEmpty(characters)) throw new ArgumentException("Characters should not be null or empty", "characters");
             SanitizeDashes(ref characters);
             var rule = new NegativeRule(String.Format("[{0}]", String.Join("", characters)));
             _rules.Add(rule);
@@ -49,7 +52,7 @@ namespace Regextra
 
         public IPassphraseRegexOptions IncludesRange(char start, char end)
         {
-            // TODO: decide whether to throw an exception if start >= end ... handled by Regex check for now
+            // if start >= end it will be handled by the Regex check in ToPattern()
             var rule = new Rule(String.Format("[{0}-{1}]", start, end));
             _rules.Add(rule);
             return this;
@@ -57,6 +60,7 @@ namespace Regextra
 
         public IPassphraseRegex ExcludesRange(char start, char end)
         {
+            // if start >= end it will be handled by the Regex check in ToPattern()
             var rule = new NegativeRule(String.Format("[{0}-{1}]", start, end));
             _rules.Add(rule);
             return this;
@@ -76,21 +80,17 @@ namespace Regextra
 
         public IPassphraseRegex WithMinimumOccurrenceOf(int length)
         {
-            if (length < 1)
-            {
-                throw new ArgumentOutOfRangeException("length", "Minimum occurrence must be greater than zero.");
-            }
-
+            if (length < 1) throw new ArgumentOutOfRangeException("length", "Minimum occurrence must be greater than zero.");
             var lastRule = (Rule)_rules.Last();
             lastRule.MinimumOccurrence = length;
             return this;
         }
 
-        public string ToPattern()
+        public PatternResult ToPattern()
         {
             if (!_rules.Any())
             {
-                return "";
+                return new PatternResult("", null);
             }
 
             if (ValidateLength(_minLength, "Minimum") && _minLength == 0)
@@ -108,23 +108,26 @@ namespace Regextra
             builder.Append("$");
 
             var pattern = builder.ToString();
-            // use the regex class to validate the pattern (exception will be thrown if invalid)
-            new Regex(pattern);
-            return pattern;
-        }
-
-        public override string ToString()
-        {
-            return ToPattern();
+            PatternResult result;
+            try
+            {
+                // use the regex class to validate the pattern (exception will be thrown if invalid)
+                new Regex(pattern);
+            }
+            catch (Exception ex)
+            {
+                _error = ex.Message;
+            }
+            finally
+            {
+                result = new PatternResult(pattern, _error);
+            }
+            return result;
         }
 
         private bool ValidateLength(int length, string type)
         {
-            if (length != 0 && length < _rules.Count)
-            {
-                throw new ArgumentException(type + " length must be greater than or equal to the number of rules specified.");
-            }
-
+            if (length != 0 && length < _rules.Count) throw new ArgumentException(type + " length must be greater than or equal to the number of rules specified.");
             return true;
         }
 
