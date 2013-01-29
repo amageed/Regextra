@@ -93,21 +93,17 @@ namespace Regextra
                 return new PatternResult("", null);
             }
 
-            if (ValidateLength(_minLength, "Minimum") && _minLength == 0)
-            {
-                _minLength = _rules.Count;
-            }
+            ValidateLength(_minLength, "Minimum");
             ValidateLength(_maxLength, "Maximum");
+            if (_minLength == 0)
+            {
+                _minLength = _maxLength > 1 ? 1 : _rules.Count;
+            }
 
             var rules = String.Join("", _rules.Select(r => r.Requirement));
-            var builder = new StringBuilder("^" + rules);
-            string range = String.Format("{0},{1}",
-                               _minLength,
-                               (_maxLength > 0 ? _maxLength.ToString() : ""));
-            builder.AppendFormat(".{{{0}}}", range);
-            builder.Append("$");
+            string quantifier = GetPatternQuantifier();
+            var pattern = String.Format("^{0}.{1}$", rules, quantifier);
 
-            var pattern = builder.ToString();
             PatternResult result;
             try
             {
@@ -123,6 +119,22 @@ namespace Regextra
                 result = new PatternResult(pattern, _error);
             }
             return result;
+        }
+
+        private string GetPatternQuantifier()
+        {
+            string quantifier = "";
+            if (_minLength <= 1 && _maxLength == 0)
+            {
+                quantifier = "+";
+            }
+            else if (_minLength > 1 || _maxLength > 1)
+            {
+                quantifier = String.Format("{{{0},{1}}}",
+                                 _minLength,
+                                 _maxLength > 0 ? _maxLength.ToString() : "");
+            }
+            return quantifier;
         }
 
         private bool ValidateLength(int length, string type)

@@ -12,13 +12,69 @@ namespace Tests
     public class PassphraseRegexTests
     {
         [Test]
+        public void Verify_Pattern_For_MinLength_Of_1()
+        {
+            var builder = PassphraseRegex.With.MinLength(1)
+                                              .ContainsCharacters("abc");
+
+            var result = builder.ToPattern();
+
+            result.Pattern.ShouldBe("^(?=.*[abc]).+$");
+        }
+
+        [Test]
+        public void Verify_Pattern_For_MinLength_Of_2()
+        {
+            var builder = PassphraseRegex.With.MinLength(2)
+                                              .ContainsCharacters("abc");
+
+            var result = builder.ToPattern();
+
+            result.Pattern.ShouldBe("^(?=.*[abc]).{2,}$");
+        }
+
+        [Test]
+        public void Verify_Pattern_For_MaxLength_Of_1()
+        {
+            var builder = PassphraseRegex.With.MaxLength(1)
+                                              .ContainsCharacters("abc");
+
+            var result = builder.ToPattern();
+
+            result.Pattern.ShouldBe("^(?=.*[abc]).$");
+        }
+
+        [Test]
+        public void Verify_Pattern_For_MaxLength_Of_2()
+        {
+            var builder = PassphraseRegex.With.MaxLength(2)
+                                              .ContainsCharacters("abc");
+
+            var result = builder.ToPattern();
+
+            result.Pattern.ShouldBe("^(?=.*[abc]).{1,2}$");
+        }
+
+        [Test]
+        public void Verify_Pattern_For_MinLength_Of_2_And_MaxLength_Of_5()
+        {
+            var builder = PassphraseRegex.With.MinLength(2)
+                                              .MaxLength(5)
+                                              .ContainsCharacters("abc");
+
+            var result = builder.ToPattern();
+
+            result.Pattern.ShouldBe("^(?=.*[abc]).{2,5}$");
+        }
+
+        [Test]
         public void Can_Specify_Range_Rule()
         {
             var builder = PassphraseRegex.That.IncludesRange('a', 'z');
 
             var result = builder.ToPattern();
 
-            result.Pattern.ShouldBe("^(?=.*[a-z]).{1,}$");
+            result.Pattern.ShouldBe("^(?=.*[a-z]).+$");
         }
 
         [Test]
@@ -28,7 +84,7 @@ namespace Tests
 
             var result = builder.ToPattern();
 
-            result.Pattern.ShouldBe("^(?!.*[a-z]).{1,}$");
+            result.Pattern.ShouldBe("^(?!.*[a-z]).+$");
         }
 
         [Test]
@@ -49,7 +105,7 @@ namespace Tests
 
             var result = builder.ToPattern();
 
-            result.Pattern.ShouldBe("^(?=.*[abc]).{1,}$");
+            result.Pattern.ShouldBe("^(?=.*[abc]).+$");
         }
 
         [TestCase(null)]
@@ -67,7 +123,7 @@ namespace Tests
 
             var result = builder.ToPattern();
 
-            result.Pattern.ShouldBe("^(?!.*[abc]).{1,}$");
+            result.Pattern.ShouldBe("^(?!.*[abc]).+$");
         }
 
         [TestCase(null)]
@@ -88,7 +144,7 @@ namespace Tests
 
             var result = builder.ToPattern();
 
-            result.Pattern.ShouldBe("^(?=.*[az-]).{1,}$");
+            result.Pattern.ShouldBe("^(?=.*[az-]).+$");
         }
 
         [Test]
@@ -98,7 +154,7 @@ namespace Tests
 
             var result = builder.ToPattern();
 
-            result.Pattern.ShouldBe("^(?=.*[a]).{1,}$");
+            result.Pattern.ShouldBe("^(?=.*[a]).+$");
         }
 
         [Test]
