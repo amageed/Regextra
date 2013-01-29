@@ -3,38 +3,41 @@ Regextra
 
 This is a new side-project for me and it's still in its infancy. Please watch the project and follow me on Twitter ([@amageed](http://www.twitter.com/amageed)).
 
-Password Rules Builder
-----------------------
+Passphrase Regex Builder
+------------------------
 
-A common question I've seen on StackOverflow is how to write code that enforces strong password rules. Popular responses tend to tackle the problem by using a regex with look-aheads. I've seen this so much that I decided to have fun writing a solution that allowed people to produce regex patterns that would enforce such rules.
+A common question I've seen on StackOverflow is how to write code that enforces strong passphrase or password rules. Popular responses tend to tackle the problem by using a regex with look-aheads. I've seen this so much that I decided to have fun writing a solution that allowed people to produce regex patterns that would enforce such rules.
 
-Currently I'm working on the ***PasswordRulesBuilder*** class, which provides a fluent API to generate the pattern. For example, the class can produce patterns to enforce:
+Currently I'm working on the ***PassphraseRegex*** class, which provides a fluent API to generate the pattern. For example, the class can produce patterns to enforce:
 
-- 1 lowercase letter
-- 1 digit
+- at least 1 lowercase letter
+- at least 2 digits
 - min/max length
 - character ranges (i.e., `[a-z]`)
+- excluded characters
+- excluded ranges
 
 Example usage
 --------------
-The following code generates a pattern to enforce a password of 8-25 characters that requires at least one lowercase letter in the range of `a-z` and numbers excluding those in the range of `0-4` (i.e., numbers in the `5-9` range are acceptable).
+The following code generates a pattern to enforce a password of 8-25 characters that requires at least two lowercase letters in the range of `a-z` and numbers excluding those in the range of `0-4` (i.e., numbers in the `5-9` range are acceptable).
 
-    var builder = new PasswordRulesBuilder().MinLength(8)
-                                            .MaxLength(25)
-                                            .IncludesRange('a', 'z')
-                                            .ExcludesRange('0', '4');
+    var builder = PassphraseRegex.With.MinLength(8)
+                                      .MaxLength(25)
+                                      .IncludesRange('a', 'z')
+                                      .WithMinimumOccurrenceOf(2)
+                                      .ExcludesRange('0', '4');
     var pattern = builder.ToPattern();
     if (Regex.IsMatch(input, pattern))
     {
-        // password meets requirements
+        // passphrase meets requirements
     }
     else
     {
-        // password is no good
+        // passphrase is no good
     }
 
-Current rule methods
---------------------
+Available methods
+-----------------
 
 - *MinLength(int length)*
 - *MaxLength(int length)*
@@ -42,17 +45,25 @@ Current rule methods
 - *ExcludesCharacters(string characters)*
 - *IncludesRange(char start, char end)*
 - *ExcludesRange(char start, char end)*
+- *WithMinimumOccurrenceOf(int length)* - available for positive rules only (i.e., *ContainsCharacters* and *IncludesRange*)
 - *ToPattern()* - generates the regex pattern based on the specified rules
-- *ToString()* - overloaded to call ToPattern()
+- *ToString()* - overridden to call ToPattern()
 
+Initialization is achieved via either of the following 3 properties so that you're free to construct the builder with code that flows nicely with the first method you decided to use:
+
+- *That* -> e.g. *PassphraseRegex.That.IncludesRange(...)*
+- *Which* -> e.g. *PassphraseRegex.Which.ExcludesCharacters(...)*
+- *With* -> e.g. *PassphraseRegex.With.MinLength(...)*
+
+Coming Soon
+-----------
 There are more enhancements in mind... off the top of my head:
 - overload the Range method to accept numbers (currently chars only), and/or specify ranges as a single string with a dash "0-9"
-- more control over the minimum occurrences required for a rule (i.e., "at least 2 digits")
 - providing access to the list of individual rules and their purpose in plain text to be able to intelligently inform a user of what rule they're not satisfying
+- annotate the regex pattern with comments based on each rule's purpose (related to the above point) for use with the *RegexOptions.IgnorePatternWhitespace* option
 - better error handling
 - more tests
-- samples
-- documentation, of course
+- samples and documentation, of course
 - Nuget package
 
 What this project is not
