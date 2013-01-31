@@ -26,8 +26,9 @@ namespace Regextra
     internal class PassphraseRegexBuilder : IPassphraseRegex, IPassphraseRegexOptions
     {
         private readonly Regex _dashMatcher = new Regex(@"\\?-");
-        private string _error;
         private IList<IRule> _rules = new List<IRule>();
+        private string _error;
+        private int _maxConsecutiveIdenticalCharacter;
         private int _minLength;
         private int _maxLength;
 
@@ -68,6 +69,13 @@ namespace Regextra
             _rules.Add(rule(String.Format("[{0}-{1}]", start, end)));
         }
 
+        public IPassphraseRegex WithMaximumConsecutiveIdenticalCharacterOf(int length)
+        {
+            if (length < 2) throw new ArgumentOutOfRangeException("length", "Maximum occurrence must be greater than one.");
+            _maxConsecutiveIdenticalCharacter = length;
+            return this;
+        }
+
         public IPassphraseRegex MinLength(int length)
         {
             _minLength = length;
@@ -103,8 +111,9 @@ namespace Regextra
             }
 
             var rules = String.Join("", _rules.Select(r => r.Requirement));
+            string maxIdenticalCharPattern = GetMaxIdenticalConsecutiveCharPattern();
             string quantifier = GetPatternQuantifier();
-            var pattern = String.Format("^{0}.{1}$", rules, quantifier);
+            var pattern = String.Format("^{0}{1}.{2}$", rules, maxIdenticalCharPattern, quantifier);
 
             PatternResult result;
             try
@@ -121,6 +130,15 @@ namespace Regextra
                 result = new PatternResult(pattern, _error);
             }
             return result;
+        }
+
+        private string GetMaxIdenticalConsecutiveCharPattern()
+        {
+            if (_maxConsecutiveIdenticalCharacter == 0)
+                return "";
+            
+            const string pattern = @"(?!.*?(.)\1{{{0}}})";
+            return String.Format(pattern, _maxConsecutiveIdenticalCharacter);
         }
 
         private string GetPatternQuantifier()

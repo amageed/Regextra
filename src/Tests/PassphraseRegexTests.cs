@@ -329,5 +329,35 @@ namespace Tests
             result.IsValid.ShouldBe(true);
             Regex.IsMatch(input, result.Pattern).ShouldBe(isValid);
         }
+
+        [Test]
+        public void Throws_ArgumentOutOfRangeException_With_MaximumConsecutiveIdenticalCharacter_Less_Than_2()
+        {
+            var exception = Should.Throw<ArgumentOutOfRangeException>(() => PassphraseRegex.With.WithMaximumConsecutiveIdenticalCharacterOf(1));
+            exception.ParamName.ShouldBe("length");
+        }
+
+        [Test]
+        public void Does_Not_Throw_Exception_With_MaximumConsecutiveIdenticalCharacter_Of_2()
+        {
+            Should.NotThrow(() => PassphraseRegex.With.WithMaximumConsecutiveIdenticalCharacterOf(2));
+        }
+
+        [TestCase(true, "abc")]
+        [TestCase(true, "aabc")]
+        [TestCase(true, "aaabc")]
+        [TestCase(true, "abbbcb")]
+        [TestCase(false, "aaaabc")]
+        [TestCase(false, "abbbbc")]
+        public void Input_Can_Contain_3_Identical_Consecutive_Characters(bool isValid, string input)
+        {
+            var builder = PassphraseRegex.That.IncludesRange('a', 'z')
+                                              .WithMaximumConsecutiveIdenticalCharacterOf(3);
+
+            var result = builder.ToPattern();
+
+            result.IsValid.ShouldBe(true);
+            Regex.IsMatch(input, result.Pattern).ShouldBe(isValid);
+        }
     }
 }
