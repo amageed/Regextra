@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Regextra
@@ -34,36 +33,39 @@ namespace Regextra
 
         public IPassphraseRegexOptions ContainsCharacters(string characters)
         {
-            if (String.IsNullOrEmpty(characters)) throw new ArgumentException("Characters should not be null or empty", "characters");
-            SanitizeDashes(ref characters);
-            var rule = new Rule(String.Format("[{0}]", String.Join("", characters)));
-            _rules.Add(rule);
+            CharactersRule<Rule>(characters, chars => new Rule(chars));
             return this;
         }
 
         public IPassphraseRegex ExcludesCharacters(string characters)
         {
+            CharactersRule<NegativeRule>(characters, chars => new NegativeRule(chars));
+            return this;
+        }
+
+        private void CharactersRule<T>(string characters, Func<string, IRule> rule)
+        {
             if (String.IsNullOrEmpty(characters)) throw new ArgumentException("Characters should not be null or empty", "characters");
             SanitizeDashes(ref characters);
-            var rule = new NegativeRule(String.Format("[{0}]", String.Join("", characters)));
-            _rules.Add(rule);
-            return this;
+            _rules.Add(rule(String.Format("[{0}]", String.Join("", characters))));
         }
 
         public IPassphraseRegexOptions IncludesRange(char start, char end)
         {
-            // if start >= end it will be handled by the Regex check in ToPattern()
-            var rule = new Rule(String.Format("[{0}-{1}]", start, end));
-            _rules.Add(rule);
+            RangeRule<Rule>(start, end, range => new Rule(range));
             return this;
         }
 
         public IPassphraseRegex ExcludesRange(char start, char end)
         {
-            // if start >= end it will be handled by the Regex check in ToPattern()
-            var rule = new NegativeRule(String.Format("[{0}-{1}]", start, end));
-            _rules.Add(rule);
+            RangeRule<NegativeRule>(start, end, range => new NegativeRule(range));
             return this;
+        }
+
+        private void RangeRule<T>(char start, char end, Func<string, IRule> rule)
+        {
+            // if start >= end it will be handled by the Regex check in ToPattern()
+            _rules.Add(rule(String.Format("[{0}-{1}]", start, end)));
         }
 
         public IPassphraseRegex MinLength(int length)
