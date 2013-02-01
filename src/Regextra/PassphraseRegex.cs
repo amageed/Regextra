@@ -44,7 +44,7 @@ namespace Regextra
             return this;
         }
 
-        private void CharactersRule<T>(string characters, Func<string, IRule> rule)
+        private void CharactersRule<T>(string characters, Func<string, IRule> rule) where T : IRule
         {
             if (String.IsNullOrEmpty(characters)) throw new ArgumentException("Characters should not be null or empty", "characters");
             SanitizeDashes(ref characters);
@@ -63,7 +63,7 @@ namespace Regextra
             return this;
         }
 
-        private void RangeRule<T>(char start, char end, Func<string, IRule> rule)
+        private void RangeRule<T>(char start, char end, Func<string, IRule> rule) where T : IRule
         {
             // if start >= end it will be handled by the Regex check in ToPattern()
             _rules.Add(rule(String.Format("[{0}-{1}]", start, end)));
