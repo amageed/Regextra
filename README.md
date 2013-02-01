@@ -16,6 +16,7 @@ Currently I'm working on the ***PassphraseRegex*** class, which provides a fluen
 - character ranges (i.e., `[a-z]`)
 - excluded characters
 - excluded ranges
+- maximum consecutive identical characters
 
 Example usage
 --------------
@@ -54,6 +55,7 @@ PassphraseRegex Class
 - *ExcludesCharacters(string characters)*
 - *IncludesRange(char start, char end)*
 - *ExcludesRange(char start, char end)*
+- *WithMaximumConsecutiveIdenticalCharacterOf(int length)* - prevents *n* identical characters, e.g., "aaabc" would fail if the max is 2
 - *WithMinimumOccurrenceOf(int length)* - available for positive rules only (i.e., *ContainsCharacters* and *IncludesRange*)
 - *ToPattern()* - generates the regex pattern based on the specified rules and returns a *PatternResult*
 
@@ -72,6 +74,7 @@ Certain methods will throw an exception when given invalid inputs.
 - *ContainsCharacters*: throws *ArgumentException* when input is null or empty
 - *ExcludesCharacters*: same behavior as *ContainsCharacters*
 - *WithMinimumOccurrenceOf*: throws *ArgumentOutOfRangeException* when the length is less than 1
+- *WithMaximumConsecutiveIdenticalCharacterOf*: throws *ArgumentOutOfRangeException* when the length is less than 2
 - *ToPattern*: throws *ArgumentException* if either of the specified min/max lengths are less than the number of rules specified
 
 PatternResult Class Properties
