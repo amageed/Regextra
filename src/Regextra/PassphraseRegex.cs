@@ -48,7 +48,7 @@ namespace Regextra
         {
             if (String.IsNullOrEmpty(characters)) throw new ArgumentException("Characters should not be null or empty", "characters");
             string sanitizedInput = SanitizeInput(characters);
-            _rules.Add(rule(String.Format("[{0}]", String.Join("", sanitizedInput))));
+            _rules.Add(rule(String.Format("[{0}]", sanitizedInput)));
         }
 
         public IPassphraseRegexOptions IncludesRange(char start, char end)
