@@ -51,12 +51,12 @@ PassphraseRegex Class
 **Available Methods:**
 - *MinLength(int length)*
 - *MaxLength(int length)*
-- *ContainsCharacters(string characters)*
+- *IncludesAnyCharacters(string characters)*
 - *ExcludesCharacters(string characters)*
 - *IncludesRange(char start, char end)*
 - *ExcludesRange(char start, char end)*
-- *WithMaximumConsecutiveIdenticalCharacterOf(int length)* - prevents *n* identical characters, e.g., "aaabc" would fail if the max is 2
-- *WithMinimumOccurrenceOf(int length)* - available for positive rules only (i.e., *ContainsCharacters* and *IncludesRange*)
+- *MaxConsecutiveIdenticalCharacterOf(int length)* - prevents *n* identical characters, e.g., "aaabc" would fail if the max is 2
+- *WithMinimumOccurrenceOf(int length)* - available for positive rules only (i.e., *IncludesAnyCharacters* and *IncludesRange*)
 - *ToPattern()* - generates the regex pattern based on the specified rules and returns a *PatternResult*
 
 **Initialization:**
@@ -71,10 +71,10 @@ Initialization is achieved via either of the following 3 properties so that you'
 
 Certain methods will throw an exception when given invalid inputs.
 
-- *ContainsCharacters*: throws *ArgumentException* when input is null or empty
-- *ExcludesCharacters*: same behavior as *ContainsCharacters*
+- *IncludesAnyCharacters*: throws *ArgumentException* when input is null or empty
+- *ExcludesCharacters*: same behavior as *IncludesAnyCharacters*
 - *WithMinimumOccurrenceOf*: throws *ArgumentOutOfRangeException* when the length is less than 1
-- *WithMaximumConsecutiveIdenticalCharacterOf*: throws *ArgumentOutOfRangeException* when the length is less than 2
+- *MaxConsecutiveIdenticalCharacterOf*: throws *ArgumentOutOfRangeException* when the length is less than 2
 - *ToPattern*: throws *ArgumentException* if either of the specified min/max lengths are less than the number of rules specified
 
 PatternResult Class Properties
