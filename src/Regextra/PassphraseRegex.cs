@@ -32,7 +32,7 @@ namespace Regextra
         private int _minLength;
         private int _maxLength;
 
-        public IPassphraseRegexOptions ContainsCharacters(string characters)
+        public IPassphraseRegexOptions IncludesAnyCharacters(string characters)
         {
             CharactersRule<Rule>(characters, chars => new Rule(chars));
             return this;
@@ -69,7 +69,7 @@ namespace Regextra
             _rules.Add(rule(String.Format("[{0}-{1}]", start, end)));
         }
 
-        public IPassphraseRegex WithMaximumConsecutiveIdenticalCharacterOf(int length)
+        public IPassphraseRegex MaxConsecutiveIdenticalCharacterOf(int length)
         {
             if (length < 2) throw new ArgumentOutOfRangeException("length", "Maximum occurrence must be greater than one.");
             _maxConsecutiveIdenticalCharacter = length;

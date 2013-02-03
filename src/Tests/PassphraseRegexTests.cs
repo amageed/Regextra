@@ -15,7 +15,7 @@ namespace Tests
         public void Verify_Pattern_For_MinLength_Of_1()
         {
             var builder = PassphraseRegex.With.MinLength(1)
-                                              .ContainsCharacters("abc");
+                                              .IncludesAnyCharacters("abc");
 
             var result = builder.ToPattern();
 
@@ -26,7 +26,7 @@ namespace Tests
         public void Verify_Pattern_For_MinLength_Of_2()
         {
             var builder = PassphraseRegex.With.MinLength(2)
-                                              .ContainsCharacters("abc");
+                                              .IncludesAnyCharacters("abc");
 
             var result = builder.ToPattern();
 
@@ -37,7 +37,7 @@ namespace Tests
         public void Verify_Pattern_For_MaxLength_Of_1()
         {
             var builder = PassphraseRegex.With.MaxLength(1)
-                                              .ContainsCharacters("abc");
+                                              .IncludesAnyCharacters("abc");
 
             var result = builder.ToPattern();
 
@@ -48,7 +48,7 @@ namespace Tests
         public void Verify_Pattern_For_MaxLength_Of_2()
         {
             var builder = PassphraseRegex.With.MaxLength(2)
-                                              .ContainsCharacters("abc");
+                                              .IncludesAnyCharacters("abc");
 
             var result = builder.ToPattern();
 
@@ -60,7 +60,7 @@ namespace Tests
         {
             var builder = PassphraseRegex.With.MinLength(2)
                                               .MaxLength(5)
-                                              .ContainsCharacters("abc");
+                                              .IncludesAnyCharacters("abc");
 
             var result = builder.ToPattern();
 
@@ -101,7 +101,7 @@ namespace Tests
         [Test]
         public void Can_Specify_Contained_Characters()
         {
-            var builder = PassphraseRegex.That.ContainsCharacters("abc");
+            var builder = PassphraseRegex.That.IncludesAnyCharacters("abc");
 
             var result = builder.ToPattern();
 
@@ -112,7 +112,7 @@ namespace Tests
         [TestCase("")]
         public void Throws_ArgumentException_With_Null_Or_Empty_Contained_Characters(string input)
         {
-            var exception = Should.Throw<ArgumentException>(() => PassphraseRegex.That.ContainsCharacters(input));
+            var exception = Should.Throw<ArgumentException>(() => PassphraseRegex.That.IncludesAnyCharacters(input));
             exception.ParamName.ShouldBe("characters");
         }
 
@@ -140,7 +140,7 @@ namespace Tests
         [TestCase("a--z")]
         public void Dash_In_Contained_Characters_Placed_At_End_To_Avoid_Unintended_Range(string characters)
         {
-            var builder = PassphraseRegex.That.ContainsCharacters(characters);
+            var builder = PassphraseRegex.That.IncludesAnyCharacters(characters);
 
             var result = builder.ToPattern();
 
@@ -150,7 +150,7 @@ namespace Tests
         [Test]
         public void Minimum_Length_Is_One_When_One_Rule_Exists()
         {
-            var builder = PassphraseRegex.That.ContainsCharacters("a");
+            var builder = PassphraseRegex.That.IncludesAnyCharacters("a");
 
             var result = builder.ToPattern();
 
@@ -160,7 +160,7 @@ namespace Tests
         [Test]
         public void Minimum_Length_Is_Two_When_Two_Rules_Exist()
         {
-            var builder = PassphraseRegex.That.ContainsCharacters("a")
+            var builder = PassphraseRegex.That.IncludesAnyCharacters("a")
                                               .IncludesRange('1', '9');
 
             var result = builder.ToPattern();
@@ -172,7 +172,7 @@ namespace Tests
         public void Throws_ArgumentException_When_Assigned_Minimum_Length_Is_Less_Than_Specified_Rules_Count()
         {
             var builder = PassphraseRegex.With.MinLength(1)
-                                              .ContainsCharacters("a")
+                                              .IncludesAnyCharacters("a")
                                               .IncludesRange('1', '9');
 
             var exception = Should.Throw<ArgumentException>(() => builder.ToPattern());
@@ -183,7 +183,7 @@ namespace Tests
         public void Throws_ArgumentException_When_Assigned_Maximum_Length_Is_Less_Than_Specified_Rules_Count()
         {
             var builder = PassphraseRegex.With.MaxLength(1)
-                                              .ContainsCharacters("a")
+                                              .IncludesAnyCharacters("a")
                                               .IncludesRange('1', '9');
 
             var exception = Should.Throw<ArgumentException>(() => builder.ToPattern());
@@ -292,7 +292,7 @@ namespace Tests
         [Test]
         public void Throws_ArgumentOutOfRangeException_With_Minimum_Occurrence_Less_Than_One()
         {
-            var builder = PassphraseRegex.That.ContainsCharacters("abc");
+            var builder = PassphraseRegex.That.IncludesAnyCharacters("abc");
 
             var exception = Should.Throw<ArgumentOutOfRangeException>(() => builder.WithMinimumOccurrenceOf(0));
             exception.ParamName.ShouldBe("length");
@@ -321,7 +321,7 @@ namespace Tests
         [TestCase(false, "abc")]
         public void Input_Contains_At_Least_Two_Digits_In_Specified_Characters(bool isValid, string input)
         {
-            var builder = PassphraseRegex.That.ContainsCharacters("0123456789")
+            var builder = PassphraseRegex.That.IncludesAnyCharacters("0123456789")
                                               .WithMinimumOccurrenceOf(2);
 
             var result = builder.ToPattern();
@@ -333,14 +333,14 @@ namespace Tests
         [Test]
         public void Throws_ArgumentOutOfRangeException_With_MaximumConsecutiveIdenticalCharacter_Less_Than_2()
         {
-            var exception = Should.Throw<ArgumentOutOfRangeException>(() => PassphraseRegex.With.WithMaximumConsecutiveIdenticalCharacterOf(1));
+            var exception = Should.Throw<ArgumentOutOfRangeException>(() => PassphraseRegex.With.MaxConsecutiveIdenticalCharacterOf(1));
             exception.ParamName.ShouldBe("length");
         }
 
         [Test]
         public void Does_Not_Throw_Exception_With_MaximumConsecutiveIdenticalCharacter_Of_2()
         {
-            Should.NotThrow(() => PassphraseRegex.With.WithMaximumConsecutiveIdenticalCharacterOf(2));
+            Should.NotThrow(() => PassphraseRegex.With.MaxConsecutiveIdenticalCharacterOf(2));
         }
 
         [TestCase(true, "abc")]
@@ -352,7 +352,7 @@ namespace Tests
         public void Input_Can_Contain_3_Identical_Consecutive_Characters(bool isValid, string input)
         {
             var builder = PassphraseRegex.That.IncludesRange('a', 'z')
-                                              .WithMaximumConsecutiveIdenticalCharacterOf(3);
+                                              .MaxConsecutiveIdenticalCharacterOf(3);
 
             var result = builder.ToPattern();
 
