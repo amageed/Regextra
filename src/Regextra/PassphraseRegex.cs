@@ -47,8 +47,8 @@ namespace Regextra
         private void CharactersRule<T>(string characters, Func<string, IRule> rule) where T : IRule
         {
             if (String.IsNullOrEmpty(characters)) throw new ArgumentException("Characters should not be null or empty", "characters");
-            SanitizeDashes(ref characters);
-            _rules.Add(rule(String.Format("[{0}]", String.Join("", characters))));
+            string sanitizedInput = SanitizeInput(characters);
+            _rules.Add(rule(String.Format("[{0}]", String.Join("", sanitizedInput))));
         }
 
         public IPassphraseRegexOptions IncludesRange(char start, char end)
@@ -163,13 +163,18 @@ namespace Regextra
             return true;
         }
 
-        private void SanitizeDashes(ref string characters)
+        private string SanitizeInput(string characters)
         {
+            string sanitized = characters;
             // remove all dashes and place one at the end to avoid an unintended range
             if (_dashMatcher.IsMatch(characters))
             {
-                characters = _dashMatcher.Replace(characters, "") + "-";
+                sanitized = _dashMatcher.Replace(characters, "") + "-";
             }
+
+            sanitized = Regex.Escape(sanitized)
+                             .Replace("]", @"\]");
+            return sanitized;
         }
     }
 }

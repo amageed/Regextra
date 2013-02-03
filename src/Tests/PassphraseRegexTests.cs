@@ -138,6 +138,7 @@ namespace Tests
         [TestCase("az-")]
         [TestCase("-az")]
         [TestCase("a--z")]
+        [TestCase(@"a\-z")]
         public void Dash_In_Contained_Characters_Placed_At_End_To_Avoid_Unintended_Range(string characters)
         {
             var builder = PassphraseRegex.That.IncludesAnyCharacters(characters);
@@ -145,6 +146,33 @@ namespace Tests
             var result = builder.ToPattern();
 
             result.Pattern.ShouldBe("^(?=.*[az-]).+$");
+        }
+
+        [TestCase("[")]
+        [TestCase("]")]
+        [TestCase("-")]
+        [TestCase("\\")]
+        public void Included_Characters_Can_Handle_Character_Class_Considerations(string input)
+        {
+            var builder = PassphraseRegex.That.IncludesAnyCharacters("[]-\\");
+
+            var result = builder.ToPattern();
+
+            result.IsValid.ShouldBe(true);
+            result.Pattern.ShouldBe(@"^(?=.*[\[\]\\-]).+$");
+            Regex.IsMatch(input, result.Pattern).ShouldBe(true);
+        }
+        
+        [Test]
+        public void Included_Characters_Will_Ignore_Character_Class_Range()
+        {
+            var builder = PassphraseRegex.That.IncludesAnyCharacters("[a-z]");
+
+            var result = builder.ToPattern();
+
+            result.IsValid.ShouldBe(true);
+            result.Pattern.ShouldBe(@"^(?=.*[\[az\]-]).+$");
+            Regex.IsMatch("b", result.Pattern).ShouldBe(false);
         }
 
         [Test]
