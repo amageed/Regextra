@@ -110,11 +110,7 @@ namespace Regextra
                 _minLength = _maxLength > 1 ? 1 : _rules.Count;
             }
 
-            var rules = String.Join("", _rules.Select(r => r.Requirement));
-            string maxIdenticalCharPattern = GetMaxIdenticalConsecutiveCharPattern();
-            string quantifier = GetPatternQuantifier();
-            var pattern = String.Format("^{0}{1}.{2}$", rules, maxIdenticalCharPattern, quantifier);
-
+            string pattern = GeneratePattern();
             PatternResult result;
             try
             {
@@ -130,6 +126,21 @@ namespace Regextra
                 result = new PatternResult(pattern, _error);
             }
             return result;
+        }
+
+        private string GeneratePattern()
+        {
+            const string rejectWhitespacePattern = @"(?!^\s|.*\s$)";
+
+            var rules = String.Join("", _rules.Select(r => r.Requirement));
+            string maxIdenticalCharPattern = GetMaxIdenticalConsecutiveCharPattern();
+            string quantifier = GetPatternQuantifier();
+            var pattern = String.Format("^{0}{1}{2}.{3}$",
+                              rules,
+                              maxIdenticalCharPattern,
+                              rejectWhitespacePattern,
+                              quantifier);
+            return pattern;
         }
 
         private string GetMaxIdenticalConsecutiveCharPattern()

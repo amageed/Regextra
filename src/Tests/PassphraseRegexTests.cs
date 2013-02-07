@@ -19,7 +19,7 @@ namespace Tests
 
             var result = builder.ToPattern();
 
-            result.Pattern.ShouldBe("^(?=.*[abc]).+$");
+            result.Pattern.ShouldBe(@"^(?=.*[abc])(?!^\s|.*\s$).+$");
         }
 
         [Test]
@@ -30,7 +30,7 @@ namespace Tests
 
             var result = builder.ToPattern();
 
-            result.Pattern.ShouldBe("^(?=.*[abc]).{2,}$");
+            result.Pattern.ShouldBe(@"^(?=.*[abc])(?!^\s|.*\s$).{2,}$");
         }
 
         [Test]
@@ -41,7 +41,7 @@ namespace Tests
 
             var result = builder.ToPattern();
 
-            result.Pattern.ShouldBe("^(?=.*[abc]).$");
+            result.Pattern.ShouldBe(@"^(?=.*[abc])(?!^\s|.*\s$).$");
         }
 
         [Test]
@@ -52,7 +52,7 @@ namespace Tests
 
             var result = builder.ToPattern();
 
-            result.Pattern.ShouldBe("^(?=.*[abc]).{1,2}$");
+            result.Pattern.ShouldBe(@"^(?=.*[abc])(?!^\s|.*\s$).{1,2}$");
         }
 
         [Test]
@@ -64,7 +64,7 @@ namespace Tests
 
             var result = builder.ToPattern();
 
-            result.Pattern.ShouldBe("^(?=.*[abc]).{2,5}$");
+            result.Pattern.ShouldBe(@"^(?=.*[abc])(?!^\s|.*\s$).{2,5}$");
         }
 
         [Test]
@@ -74,7 +74,7 @@ namespace Tests
 
             var result = builder.ToPattern();
 
-            result.Pattern.ShouldBe("^(?=.*[a-z]).+$");
+            result.Pattern.ShouldBe(@"^(?=.*[a-z])(?!^\s|.*\s$).+$");
         }
 
         [Test]
@@ -84,7 +84,7 @@ namespace Tests
 
             var result = builder.ToPattern();
 
-            result.Pattern.ShouldBe("^(?!.*[a-z]).+$");
+            result.Pattern.ShouldBe(@"^(?!.*[a-z])(?!^\s|.*\s$).+$");
         }
 
         [Test]
@@ -105,7 +105,7 @@ namespace Tests
 
             var result = builder.ToPattern();
 
-            result.Pattern.ShouldBe("^(?=.*[abc]).+$");
+            result.Pattern.ShouldBe(@"^(?=.*[abc])(?!^\s|.*\s$).+$");
         }
 
         [TestCase(null)]
@@ -123,7 +123,7 @@ namespace Tests
 
             var result = builder.ToPattern();
 
-            result.Pattern.ShouldBe("^(?!.*[abc]).+$");
+            result.Pattern.ShouldBe(@"^(?!.*[abc])(?!^\s|.*\s$).+$");
         }
 
         [TestCase(null)]
@@ -145,7 +145,7 @@ namespace Tests
 
             var result = builder.ToPattern();
 
-            result.Pattern.ShouldBe("^(?=.*[az-]).+$");
+            result.Pattern.ShouldBe(@"^(?=.*[az-])(?!^\s|.*\s$).+$");
         }
 
         [TestCase("[")]
@@ -159,7 +159,7 @@ namespace Tests
             var result = builder.ToPattern();
 
             result.IsValid.ShouldBe(true);
-            result.Pattern.ShouldBe(@"^(?=.*[[\]\\-]).+$");
+            result.Pattern.ShouldBe(@"^(?=.*[[\]\\-])(?!^\s|.*\s$).+$");
             Regex.IsMatch(input, result.Pattern).ShouldBe(true);
         }
         
@@ -171,7 +171,7 @@ namespace Tests
             var result = builder.ToPattern();
 
             result.IsValid.ShouldBe(true);
-            result.Pattern.ShouldBe(@"^(?=.*[[az\]-]).+$");
+            result.Pattern.ShouldBe(@"^(?=.*[[az\]-])(?!^\s|.*\s$).+$");
             Regex.IsMatch("b", result.Pattern).ShouldBe(false);
         }
 
@@ -182,7 +182,7 @@ namespace Tests
 
             var result = builder.ToPattern();
 
-            result.Pattern.ShouldBe("^(?=.*[a]).+$");
+            result.Pattern.ShouldBe(@"^(?=.*[a])(?!^\s|.*\s$).+$");
         }
 
         [Test]
@@ -193,7 +193,7 @@ namespace Tests
 
             var result = builder.ToPattern();
 
-            result.Pattern.ShouldBe("^(?=.*[a])(?=.*[1-9]).{2,}$");
+            result.Pattern.ShouldBe(@"^(?=.*[a])(?=.*[1-9])(?!^\s|.*\s$).{2,}$");
         }
 
         [Test]
@@ -311,7 +311,7 @@ namespace Tests
             var builder = PassphraseRegex.That.ExcludesRange(' ', '/');
 
             var result = builder.ToPattern();
-            var range = Enumerable.Range((int)startChar, (int)endChar + 1).Select(i => ((char)i).ToString());
+            var range = Enumerable.Range((int)startChar, (int)endChar + 1 - (int)startChar).Select(i => ((char)i).ToString());
 
             result.IsValid.ShouldBe(true);
             range.All(c => Regex.IsMatch(c, result.Pattern)).ShouldBe(isValid);
@@ -381,6 +381,20 @@ namespace Tests
         {
             var builder = PassphraseRegex.That.IncludesRange('a', 'z')
                                               .MaxConsecutiveIdenticalCharacterOf(3);
+
+            var result = builder.ToPattern();
+
+            result.IsValid.ShouldBe(true);
+            Regex.IsMatch(input, result.Pattern).ShouldBe(isValid);
+        }
+
+        [TestCase(true, "ab c")]
+        [TestCase(false, " abc")]
+        [TestCase(false, "abc ")]
+        [TestCase(false, " abc ")]
+        public void Leading_And_Trailing_Space_Is_Rejected(bool isValid, string input)
+        {
+            var builder = PassphraseRegex.That.IncludesRange('a', 'z');
 
             var result = builder.ToPattern();
 
