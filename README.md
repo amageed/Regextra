@@ -3,6 +3,10 @@ Regextra
 
 This is a new side-project for me and it's still in its infancy. Please watch the project and follow me on Twitter ([@amageed](http://www.twitter.com/amageed)).
 
+Project Demo Site
+-----------------
+Visit the project's demo site for more examples and a chance to try out some client-side validation: http://softwareninjaneer.com/regextra
+
 Passphrase Regex Builder
 ------------------------
 
@@ -63,9 +67,9 @@ PassphraseRegex Class
 
 Initialization is achieved via either of the following 3 properties so that you're free to construct the builder with code that flows nicely with the first method you decided to use:
 
-- *That* -> e.g. *PassphraseRegex.That.IncludesRange(...)*
-- *Which* -> e.g. *PassphraseRegex.Which.ExcludesCharacters(...)*
-- *With* -> e.g. *PassphraseRegex.With.MinLength(...)*
+- *That*: e.g. *PassphraseRegex.That.IncludesRange(...)*
+- *Which*: e.g. *PassphraseRegex.Which.ExcludesCharacters(...)*
+- *With*: e.g. *PassphraseRegex.With.MinLength(...)*
 
 **Possible Exceptions Thrown:**
 
@@ -86,15 +90,15 @@ Once you've specified the *PatternRegex* rules and call *ToPattern()*, a *Patter
 - *Error*: if the pattern was invalid, this contains the Regex class' exception message
 - *Pattern*: the generated pattern to use with the Regex class
 
-Coming Soon
------------
-There are more enhancements in mind... off the top of my head:
-- overload the Range method to accept numbers (currently chars only), and/or specify ranges as a single string with a dash "0-9"
-- providing access to the list of individual rules and their purpose in plain text to be able to intelligently inform a user of what rule they're not satisfying
-- annotate the regex pattern with comments based on each rule's purpose (related to the above point) for use with the *RegexOptions.IgnorePatternWhitespace* option
-- more tests
-- samples and documentation, of course
+Todo
+----
+These are some potential enhancements in mind...
 - Nuget package
+- test addition of metacharacters with existing methods or see if new methods are needed to support them
+- add an "either" type of group (low priority)
+- overload the Range method to accept numbers (currently chars only), and/or specify ranges as a single string with a dash "0-9"
+- providing access to the list of individual rules and their purpose in plain text to be able to intelligently inform a user of what rule they're not satisfying (also useful for JavaScript usage)
+- annotate the regex pattern with comments based on each rule's purpose (related to the above point) for use with the *RegexOptions.IgnorePatternWhitespace* option
 
 What this project is not
 ------------------------
