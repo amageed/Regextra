@@ -172,8 +172,10 @@ namespace Regextra
                 sanitized = _dashMatcher.Replace(characters, "") + "-";
             }
 
-            sanitized = Regex.Escape(sanitized)
-                             .Replace("]", @"\]");
+            // Regex.Escape is an option but since this input is used in a character class some of it is redundant and lengthens the pattern for no good reason
+            // escape backslashes and escape closing square bracket to avoid potential character class issue when an opening square bracket occurs before it
+            sanitized = sanitized.Replace(@"\", @"\\")
+                                 .Replace("]", @"\]");
             return sanitized;
         }
     }

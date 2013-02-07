@@ -159,7 +159,7 @@ namespace Tests
             var result = builder.ToPattern();
 
             result.IsValid.ShouldBe(true);
-            result.Pattern.ShouldBe(@"^(?=.*[\[\]\\-]).+$");
+            result.Pattern.ShouldBe(@"^(?=.*[[\]\\-]).+$");
             Regex.IsMatch(input, result.Pattern).ShouldBe(true);
         }
         
@@ -171,7 +171,7 @@ namespace Tests
             var result = builder.ToPattern();
 
             result.IsValid.ShouldBe(true);
-            result.Pattern.ShouldBe(@"^(?=.*[\[az\]-]).+$");
+            result.Pattern.ShouldBe(@"^(?=.*[[az\]-]).+$");
             Regex.IsMatch("b", result.Pattern).ShouldBe(false);
         }
 
