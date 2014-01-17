@@ -90,18 +90,8 @@ Once you've specified the *PatternRegex* rules and call *ToPattern()*, a *Patter
 - *Error*: if the pattern was invalid, this contains the Regex class' exception message
 - *Pattern*: the generated pattern to use with the Regex class
 
-Todo
-----
-These are some potential enhancements in mind...
-- Nuget package
-- test addition of metacharacters with existing methods or see if new methods are needed to support them
-- add an "either" type of group (low priority)
-- overload the Range method to accept numbers (currently chars only), and/or specify ranges as a single string with a dash "0-9"
-- providing access to the list of individual rules and their purpose in plain text to be able to intelligently inform a user of what rule they're not satisfying (also useful for JavaScript usage)
-- annotate the regex pattern with comments based on each rule's purpose (related to the above point) for use with the *RegexOptions.IgnorePatternWhitespace* option
-
 What this project is not
 ------------------------
 This project isn't an attempt to write a fluent API for regular expressions in general. Learning regex is a better option IMO :)
 
-Regextra is Copyright © 2013 [Ahmad Mageed](http://softwareninjaneer.com) under the [MIT license](https://github.com/amageed/Regextra/blob/master/LICENSE).
+Regextra is Copyright © 2013-2014 [Ahmad Mageed](http://softwareninjaneer.com) under the [MIT license](https://github.com/amageed/Regextra/blob/master/LICENSE).
