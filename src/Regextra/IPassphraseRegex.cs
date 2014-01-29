@@ -11,6 +11,6 @@ namespace Regextra
         IPassphraseRegex MinLength(int length);
         IPassphraseRegex MaxLength(int length);
         IPassphraseRegex MaxConsecutiveIdenticalCharacterOf(int length);
-        PatternResult ToPattern();
+        PassphraseRegexResult ToRegex();
     }
 }

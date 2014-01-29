@@ -12,12 +12,25 @@ namespace Tests
     public class PassphraseRegexTests
     {
         [Test]
+        public void Invalid_Result_When_Rules_Are_Empty()
+        {
+            var builder = PassphraseRegex.With.MaxLength(1);
+
+            var result = builder.ToRegex();
+
+            result.Error.ShouldBe("No rules were specified");
+            result.IsValid.ShouldBe(false);
+            result.Regex.ShouldBe(null);
+            result.Pattern.ShouldBe(null);
+        }
+
+        [Test]
         public void Verify_Pattern_For_MinLength_Of_1()
         {
             var builder = PassphraseRegex.With.MinLength(1)
                                               .IncludesAnyCharacters("abc");
 
-            var result = builder.ToPattern();
+            var result = builder.ToRegex();
 
             result.Pattern.ShouldBe(@"^(?=.*[abc])(?!^\s|.*\s$).+$");
         }
@@ -28,7 +41,7 @@ namespace Tests
             var builder = PassphraseRegex.With.MinLength(2)
                                               .IncludesAnyCharacters("abc");
 
-            var result = builder.ToPattern();
+            var result = builder.ToRegex();
 
             result.Pattern.ShouldBe(@"^(?=.*[abc])(?!^\s|.*\s$).{2,}$");
         }
@@ -39,7 +52,7 @@ namespace Tests
             var builder = PassphraseRegex.With.MaxLength(1)
                                               .IncludesAnyCharacters("abc");
 
-            var result = builder.ToPattern();
+            var result = builder.ToRegex();
 
             result.Pattern.ShouldBe(@"^(?=.*[abc])(?!^\s|.*\s$).$");
         }
@@ -50,7 +63,7 @@ namespace Tests
             var builder = PassphraseRegex.With.MaxLength(2)
                                               .IncludesAnyCharacters("abc");
 
-            var result = builder.ToPattern();
+            var result = builder.ToRegex();
 
             result.Pattern.ShouldBe(@"^(?=.*[abc])(?!^\s|.*\s$).{1,2}$");
         }
@@ -62,7 +75,7 @@ namespace Tests
                                               .MaxLength(5)
                                               .IncludesAnyCharacters("abc");
 
-            var result = builder.ToPattern();
+            var result = builder.ToRegex();
 
             result.Pattern.ShouldBe(@"^(?=.*[abc])(?!^\s|.*\s$).{2,5}$");
         }
@@ -72,7 +85,7 @@ namespace Tests
         {
             var builder = PassphraseRegex.That.IncludesRange('a', 'z');
 
-            var result = builder.ToPattern();
+            var result = builder.ToRegex();
 
             result.Pattern.ShouldBe(@"^(?=.*[a-z])(?!^\s|.*\s$).+$");
         }
@@ -82,7 +95,7 @@ namespace Tests
         {
             var builder = PassphraseRegex.Which.ExcludesRange('a', 'z');
 
-            var result = builder.ToPattern();
+            var result = builder.ToRegex();
 
             result.Pattern.ShouldBe(@"^(?!.*[a-z])(?!^\s|.*\s$).+$");
         }
@@ -92,10 +105,12 @@ namespace Tests
         {
             var builder = PassphraseRegex.That.IncludesRange('z', 'a');
 
-            var result = builder.ToPattern();
+            var result = builder.ToRegex();
 
             result.IsValid.ShouldBe(false);
+            result.Regex.ShouldBe(null);
             result.Error.ShouldContain("range in reverse order");
+            result.Pattern.ShouldNotBe(null);
         }
 
         [Test]
@@ -103,7 +118,7 @@ namespace Tests
         {
             var builder = PassphraseRegex.That.IncludesAnyCharacters("abc");
 
-            var result = builder.ToPattern();
+            var result = builder.ToRegex();
 
             result.Pattern.ShouldBe(@"^(?=.*[abc])(?!^\s|.*\s$).+$");
         }
@@ -121,7 +136,7 @@ namespace Tests
         {
             var builder = PassphraseRegex.That.ExcludesCharacters("abc");
 
-            var result = builder.ToPattern();
+            var result = builder.ToRegex();
 
             result.Pattern.ShouldBe(@"^(?!.*[abc])(?!^\s|.*\s$).+$");
         }
@@ -143,7 +158,7 @@ namespace Tests
         {
             var builder = PassphraseRegex.That.IncludesAnyCharacters(characters);
 
-            var result = builder.ToPattern();
+            var result = builder.ToRegex();
 
             result.Pattern.ShouldBe(@"^(?=.*[az-])(?!^\s|.*\s$).+$");
         }
@@ -156,7 +171,7 @@ namespace Tests
         {
             var builder = PassphraseRegex.That.IncludesAnyCharacters("[]-\\");
 
-            var result = builder.ToPattern();
+            var result = builder.ToRegex();
 
             result.IsValid.ShouldBe(true);
             result.Pattern.ShouldBe(@"^(?=.*[[\]\\-])(?!^\s|.*\s$).+$");
@@ -168,7 +183,7 @@ namespace Tests
         {
             var builder = PassphraseRegex.That.IncludesAnyCharacters("[a-z]");
 
-            var result = builder.ToPattern();
+            var result = builder.ToRegex();
 
             result.IsValid.ShouldBe(true);
             result.Pattern.ShouldBe(@"^(?=.*[[az\]-])(?!^\s|.*\s$).+$");
@@ -180,7 +195,7 @@ namespace Tests
         {
             var builder = PassphraseRegex.That.IncludesAnyCharacters("a");
 
-            var result = builder.ToPattern();
+            var result = builder.ToRegex();
 
             result.Pattern.ShouldBe(@"^(?=.*[a])(?!^\s|.*\s$).+$");
         }
@@ -191,7 +206,7 @@ namespace Tests
             var builder = PassphraseRegex.That.IncludesAnyCharacters("a")
                                               .IncludesRange('1', '9');
 
-            var result = builder.ToPattern();
+            var result = builder.ToRegex();
 
             result.Pattern.ShouldBe(@"^(?=.*[a])(?=.*[1-9])(?!^\s|.*\s$).{2,}$");
         }
@@ -203,7 +218,7 @@ namespace Tests
                                               .IncludesAnyCharacters("a")
                                               .IncludesRange('1', '9');
 
-            var exception = Should.Throw<ArgumentException>(() => builder.ToPattern());
+            var exception = Should.Throw<ArgumentException>(() => builder.ToRegex());
             exception.Message.ShouldStartWith("Minimum length");
         }
 
@@ -214,7 +229,7 @@ namespace Tests
                                               .IncludesAnyCharacters("a")
                                               .IncludesRange('1', '9');
 
-            var exception = Should.Throw<ArgumentException>(() => builder.ToPattern());
+            var exception = Should.Throw<ArgumentException>(() => builder.ToRegex());
             exception.Message.ShouldStartWith("Maximum length");
         }
 
@@ -228,7 +243,7 @@ namespace Tests
             var builder = PassphraseRegex.That.IncludesRange('a', 'z')
                                               .IncludesRange('0', '9');
 
-            var result = builder.ToPattern();
+            var result = builder.ToRegex();
 
             result.IsValid.ShouldBe(true);
             Regex.IsMatch(input, result.Pattern).ShouldBe(isValid);
@@ -241,7 +256,7 @@ namespace Tests
             var builder = PassphraseRegex.With.MinLength(2)
                                               .IncludesRange('a', 'z');
 
-            var result = builder.ToPattern();
+            var result = builder.ToRegex();
 
             result.IsValid.ShouldBe(true);
             Regex.IsMatch(input, result.Pattern).ShouldBe(isValid);
@@ -255,7 +270,7 @@ namespace Tests
         {
             var builder = PassphraseRegex.That.ExcludesRange('a', 'z');
 
-            var result = builder.ToPattern();
+            var result = builder.ToRegex();
 
             result.IsValid.ShouldBe(true);
             Regex.IsMatch(input, result.Pattern).ShouldBe(isValid);
@@ -270,7 +285,7 @@ namespace Tests
         {
             var builder = PassphraseRegex.That.ExcludesCharacters("abc");
 
-            var result = builder.ToPattern();
+            var result = builder.ToRegex();
 
             result.IsValid.ShouldBe(true);
             Regex.IsMatch(input, result.Pattern).ShouldBe(isValid);
@@ -283,7 +298,7 @@ namespace Tests
         {
             var builder = PassphraseRegex.That.ExcludesRange('0', '9');
 
-            var result = builder.ToPattern();
+            var result = builder.ToRegex();
 
             result.IsValid.ShouldBe(true);
             Regex.IsMatch(input, result.Pattern).ShouldBe(isValid);
@@ -297,7 +312,7 @@ namespace Tests
             var builder = PassphraseRegex.With.MinLength(3)
                                               .ExcludesRange('6', '9');
 
-            var result = builder.ToPattern();
+            var result = builder.ToRegex();
 
             result.IsValid.ShouldBe(true);
             Regex.IsMatch(input, result.Pattern).ShouldBe(isValid);
@@ -310,7 +325,7 @@ namespace Tests
         {
             var builder = PassphraseRegex.That.ExcludesRange(' ', '/');
 
-            var result = builder.ToPattern();
+            var result = builder.ToRegex();
             var range = Enumerable.Range((int)startChar, (int)endChar + 1 - (int)startChar).Select(i => ((char)i).ToString());
 
             result.IsValid.ShouldBe(true);
@@ -336,7 +351,7 @@ namespace Tests
             var builder = PassphraseRegex.That.IncludesRange('0', '9')
                                               .WithMinimumOccurrenceOf(2);
 
-            var result = builder.ToPattern();
+            var result = builder.ToRegex();
 
             result.IsValid.ShouldBe(true);
             Regex.IsMatch(input, result.Pattern).ShouldBe(isValid);
@@ -352,7 +367,7 @@ namespace Tests
             var builder = PassphraseRegex.That.IncludesAnyCharacters("0123456789")
                                               .WithMinimumOccurrenceOf(2);
 
-            var result = builder.ToPattern();
+            var result = builder.ToRegex();
 
             result.IsValid.ShouldBe(true);
             Regex.IsMatch(input, result.Pattern).ShouldBe(isValid);
@@ -382,7 +397,7 @@ namespace Tests
             var builder = PassphraseRegex.That.IncludesRange('a', 'z')
                                               .MaxConsecutiveIdenticalCharacterOf(3);
 
-            var result = builder.ToPattern();
+            var result = builder.ToRegex();
 
             result.IsValid.ShouldBe(true);
             Regex.IsMatch(input, result.Pattern).ShouldBe(isValid);
@@ -396,7 +411,7 @@ namespace Tests
         {
             var builder = PassphraseRegex.That.IncludesRange('a', 'z');
 
-            var result = builder.ToPattern();
+            var result = builder.ToRegex();
 
             result.IsValid.ShouldBe(true);
             Regex.IsMatch(input, result.Pattern).ShouldBe(isValid);

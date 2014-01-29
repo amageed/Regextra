@@ -27,7 +27,6 @@ namespace Regextra
     {
         private readonly Regex _dashMatcher = new Regex(@"\\?-");
         private IList<IRule> _rules = new List<IRule>();
-        private string _error;
         private int _maxConsecutiveIdenticalCharacter;
         private int _minLength;
         private int _maxLength;
@@ -96,11 +95,11 @@ namespace Regextra
             return this;
         }
 
-        public PatternResult ToPattern()
+        public PassphraseRegexResult ToRegex()
         {
             if (!_rules.Any())
             {
-                return new PatternResult("", null);
+                return new PassphraseRegexResult(null, "No rules were specified");
             }
 
             ValidateLength(_minLength, "Minimum");
@@ -111,19 +110,21 @@ namespace Regextra
             }
 
             string pattern = GeneratePattern();
-            PatternResult result;
+            PassphraseRegexResult result;
+            Regex regex = null;
+            string error = null;
             try
             {
                 // use the regex class to validate the pattern (exception will be thrown if invalid)
-                new Regex(pattern);
+                regex = new Regex(pattern);
             }
             catch (Exception ex)
             {
-                _error = ex.Message;
+                error = ex.Message;
             }
             finally
             {
-                result = new PatternResult(pattern, _error);
+                result = new PassphraseRegexResult(regex, pattern, error);
             }
             return result;
         }
