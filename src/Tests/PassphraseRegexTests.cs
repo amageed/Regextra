@@ -91,13 +91,13 @@ namespace Tests
         }
 
         [Test]
-        public void Can_Specify_Excluded_Range_Rule()
+        public void Can_Specify_Range_Rule_Using_Numbers()
         {
-            var builder = PassphraseRegex.Which.ExcludesRange('a', 'z');
+            var builder = PassphraseRegex.That.IncludesRange(0, 9);
 
             var result = builder.ToRegex();
 
-            result.Pattern.ShouldBe(@"^(?!.*[a-z])(?!^\s|.*\s$).+$");
+            result.Pattern.ShouldBe(@"^(?=.*[0-9])(?!^\s|.*\s$).+$");
         }
 
         [Test]
@@ -111,6 +111,76 @@ namespace Tests
             result.Regex.ShouldBe(null);
             result.Error.ShouldContain("range in reverse order");
             result.Pattern.ShouldNotBe(null);
+        }
+
+        [Test]
+        public void Can_Specify_Excluded_Range_Rule()
+        {
+            var builder = PassphraseRegex.Which.ExcludesRange('a', 'z');
+
+            var result = builder.ToRegex();
+
+            result.Pattern.ShouldBe(@"^(?!.*[a-z])(?!^\s|.*\s$).+$");
+        }
+
+        [Test]
+        public void Can_Specify_Excluded_Range_Rule_Using_Numbers()
+        {
+            var builder = PassphraseRegex.That.ExcludesRange(0, 9);
+
+            var result = builder.ToRegex();
+
+            result.Pattern.ShouldBe(@"^(?!.*[0-9])(?!^\s|.*\s$).+$");
+        }
+
+        [TestCase(true, 0, 1, 2, 3, 4, 5)]
+        [TestCase(false, 6, 7, 8, 9)]
+        public void Numeric_Range_0_5_Accepts_Valid_Numbers(bool isValid, params int[] inputs)
+        {
+            var builder = PassphraseRegex.That.IncludesRange(0, 5);
+
+            var result = builder.ToRegex();
+
+            inputs.All(i => result.Regex.IsMatch(i.ToString())).ShouldBe(isValid);
+        }
+
+        [TestCase(true, 5, 6, 7, 8, 9)]
+        [TestCase(false, 0, 1, 2, 3, 4)]
+        public void Numeric_Range_0_4_Rejects_Invalid_Numbers(bool isValid, params int[] inputs)
+        {
+            var builder = PassphraseRegex.That.ExcludesRange(0, 4);
+
+            var result = builder.ToRegex();
+
+            inputs.All(i => result.Regex.IsMatch(i.ToString())).ShouldBe(isValid);
+        }
+
+        [Test]
+        public void Negative_Numeric_Range_Start_Value_Throws_ArgumentOutOfRangeException()
+        {
+            var exception = Should.Throw<ArgumentOutOfRangeException>(() => PassphraseRegex.That.IncludesRange(-1, 9));
+            exception.ParamName.ShouldBe("start");
+        }
+
+        [Test]
+        public void Negative_Numeric_Range_End_Value_Throws_ArgumentOutOfRangeException()
+        {
+            var exception = Should.Throw<ArgumentOutOfRangeException>(() => PassphraseRegex.That.ExcludesRange(0, -9));
+            exception.ParamName.ShouldBe("end");
+        }
+
+        [Test]
+        public void Numeric_Range_Start_Value_Greater_Than_Ten_Throws_FormatException()
+        {
+            var exception = Should.Throw<ArgumentOutOfRangeException>(() => PassphraseRegex.That.ExcludesRange(10, 1));
+            exception.ParamName.ShouldBe("start");
+        }
+
+        [Test]
+        public void Numeric_Range_End_Value_Greater_Than_Ten_Throws_FormatException()
+        {
+            var exception = Should.Throw<ArgumentOutOfRangeException>(() => PassphraseRegex.That.IncludesRange(0, 10));
+            exception.ParamName.ShouldBe("end");
         }
 
         [Test]
@@ -177,7 +247,7 @@ namespace Tests
             result.Pattern.ShouldBe(@"^(?=.*[[\]\\-])(?!^\s|.*\s$).+$");
             Regex.IsMatch(input, result.Pattern).ShouldBe(true);
         }
-        
+
         [Test]
         public void Included_Characters_Will_Ignore_Character_Class_Range()
         {

@@ -56,10 +56,33 @@ namespace Regextra
             return this;
         }
 
+        public IPassphraseRegexOptions IncludesRange(int start, int end)
+        {
+            RangeRule<Rule>(start, end, range => new Rule(range));
+            return this;
+        }
+
         public IPassphraseRegex ExcludesRange(char start, char end)
         {
             RangeRule<NegativeRule>(start, end, range => new NegativeRule(range));
             return this;
+        }
+
+        public IPassphraseRegex ExcludesRange(int start, int end)
+        {
+            RangeRule<NegativeRule>(start, end, range => new NegativeRule(range));
+            return this;
+        }
+
+        private void RangeRule<T>(int start, int end, Func<string, IRule> rule) where T : IRule
+        {
+            const string rangeExceptionMessage = "Range value must be a positive single digit between 0-9";
+            if (start < 0 || start > 9)
+                throw new ArgumentOutOfRangeException("start", rangeExceptionMessage);
+            if (end < 0 || end > 9)
+                throw new ArgumentOutOfRangeException("end", rangeExceptionMessage);
+
+            RangeRule<T>(Char.Parse(start.ToString()), Char.Parse(end.ToString()), rule);
         }
 
         private void RangeRule<T>(char start, char end, Func<string, IRule> rule) where T : IRule
