@@ -32,6 +32,24 @@ namespace Regextra
         private int _minLength;
         private int _maxLength;
 
+        public IPassphraseRegex IncludesText(string text)
+        {
+            TextRule<Rule>(text, input => new Rule(input));
+            return this;
+        }
+
+        public IPassphraseRegex ExcludesText(string text)
+        {
+            TextRule<Rule>(text, input => new NegativeRule(input));
+            return this;
+        }
+        
+        private void TextRule<T>(string text, Func<string, IRule> rule) where T : IRule
+        {
+            if (String.IsNullOrEmpty(text)) throw new ArgumentException("Text should not be null or empty", "text");
+            _rules.Add(rule(Regex.Escape(text)));
+        }
+
         public IPassphraseRegexOptions IncludesAnyCharacters(string characters)
         {
             CharactersRule<Rule>(characters, chars => new Rule(chars));

@@ -4,6 +4,8 @@ namespace Regextra
 {
     public interface IPassphraseRegex
     {
+        IPassphraseRegex IncludesText(string text);
+        IPassphraseRegex ExcludesText(string text);
         IPassphraseRegexOptions IncludesAnyCharacters(string characters);
         IPassphraseRegex ExcludesCharacters(string characters);
         IPassphraseRegexOptions IncludesRange(char start, char end);
