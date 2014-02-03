@@ -188,5 +188,28 @@ namespace Tests
             result.IsValid.ShouldBe(true);
             Regex.IsMatch(input, result.Pattern).ShouldBe(isValid);
         }
+
+        [Test]
+        public void RegexOptions_Is_None_By_Default()
+        {
+            var builder = PassphraseRegex.That.IncludesText("abc");
+
+            var result = builder.ToRegex();
+
+            result.Regex.Options.ShouldBe(RegexOptions.None);
+        }
+
+        [TestCase(RegexOptions.Compiled)]
+        [TestCase(RegexOptions.IgnoreCase)]
+        [TestCase(RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+        public void Can_Specify_RegexOptions(RegexOptions options)
+        {
+            var builder = PassphraseRegex.That.IncludesText("abc")
+                                              .Options(options);
+
+            var result = builder.ToRegex();
+
+            result.Regex.Options.ShouldBe(options);
+        }
     }
 }

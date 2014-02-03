@@ -27,6 +27,7 @@ namespace Regextra
     {
         private readonly Regex _dashMatcher = new Regex(@"\\?-");
         private readonly Regex _caretMatcher = new Regex(@"\\?\^");
+        private RegexOptions _options = RegexOptions.None;
         private IList<IRule> _rules = new List<IRule>();
         private int _maxConsecutiveIdenticalCharacter;
         private int _minLength;
@@ -137,6 +138,12 @@ namespace Regextra
             return this;
         }
 
+        public IPassphraseRegex Options(RegexOptions options)
+        {
+            _options = options;
+            return this;
+        }
+
         public PassphraseRegexResult ToRegex()
         {
             if (!_rules.Any())
@@ -158,7 +165,7 @@ namespace Regextra
             try
             {
                 // use the regex class to validate the pattern (exception will be thrown if invalid)
-                regex = new Regex(pattern);
+                regex = new Regex(pattern, _options);
             }
             catch (Exception ex)
             {

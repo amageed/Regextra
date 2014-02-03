@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 
 namespace Regextra
 {
@@ -15,6 +16,7 @@ namespace Regextra
         IPassphraseRegex MinLength(int length);
         IPassphraseRegex MaxLength(int length);
         IPassphraseRegex MaxConsecutiveIdenticalCharacterOf(int length);
+        IPassphraseRegex Options(RegexOptions options);
         PassphraseRegexResult ToRegex();
     }
 }

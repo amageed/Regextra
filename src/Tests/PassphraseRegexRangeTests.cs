@@ -200,5 +200,31 @@ namespace Tests
             result.IsValid.ShouldBe(true);
             Regex.IsMatch(input, result.Pattern).ShouldBe(isValid);
         }
+
+        [TestCase("abcdefg")]
+        [TestCase("abCDEfg")]
+        public void Input_Includes_Letters_From_C_To_E_With_RegexOptions_IgnoreCase_Accepts_Any_Casing(string input)
+        {
+            var builder = PassphraseRegex.That.IncludesRange('c', 'e')
+                                              .Options(RegexOptions.IgnoreCase);
+
+            var result = builder.ToRegex();
+
+            result.Regex.IsMatch(input).ShouldBe(true);
+            result.Regex.Options.ShouldBe(RegexOptions.IgnoreCase);
+        }
+
+        [TestCase("abcdefg")]
+        [TestCase("abCDEfg")]
+        public void Input_Excludes_Letters_From_C_To_E_With_RegexOptions_IgnoreCase_Rejects_Any_Casing(string input)
+        {
+            var builder = PassphraseRegex.That.ExcludesRange('C', 'E')
+                                              .Options(RegexOptions.IgnoreCase);
+
+            var result = builder.ToRegex();
+
+            result.Regex.IsMatch(input).ShouldBe(false);
+            result.Regex.Options.ShouldBe(RegexOptions.IgnoreCase);
+        }
     }
 }

@@ -88,5 +88,31 @@ namespace Tests
             result.Regex.IsMatch(passingText).ShouldBe(true);
             result.Regex.IsMatch(failingText).ShouldBe(false);
         }
+
+        [TestCase("abc")]
+        [TestCase("AbC")]
+        public void Included_Text_With_RegexOptions_IgnoreCase_Accepts_Any_Casing(string input)
+        {
+            var builder = PassphraseRegex.That.IncludesText("abc")
+                                              .Options(RegexOptions.IgnoreCase);
+
+            var result = builder.ToRegex();
+
+            result.Regex.IsMatch(input).ShouldBe(true);
+            result.Regex.Options.ShouldBe(RegexOptions.IgnoreCase);
+        }
+
+        [TestCase("abc")]
+        [TestCase("AbC")]
+        public void Excluded_Text_With_RegexOptions_IgnoreCase_Rejects_Any_Casing(string input)
+        {
+            var builder = PassphraseRegex.That.ExcludesText("abc")
+                                              .Options(RegexOptions.IgnoreCase);
+
+            var result = builder.ToRegex();
+
+            result.Regex.IsMatch(input).ShouldBe(false);
+            result.Regex.Options.ShouldBe(RegexOptions.IgnoreCase);
+        }
     }
 }
