@@ -233,19 +233,78 @@ namespace Tests
             result.Pattern.ShouldBe(@"^(?=.*[az-])(?!^\s|.*\s$).+$");
         }
 
+        [TestCase("a-z")]
+        [TestCase("az-")]
+        [TestCase("-az")]
+        [TestCase("a--z")]
+        [TestCase(@"a\-z")]
+        public void Dash_In_Excluded_Characters_Placed_At_End_To_Avoid_Unintended_Range(string characters)
+        {
+            var builder = PassphraseRegex.That.ExcludesCharacters(characters);
+
+            var result = builder.ToRegex();
+
+            result.Pattern.ShouldBe(@"^(?!.*[az-])(?!^\s|.*\s$).+$");
+        }
+
+        [TestCase("a^z")]
+        [TestCase("az^")]
+        [TestCase("^az")]
+        [TestCase("a^z")]
+        [TestCase(@"a\^z")]
+        public void Caret_In_Contained_Characters_Placed_At_End_To_Avoid_Unintended_Negation(string characters)
+        {
+            var builder = PassphraseRegex.That.IncludesAnyCharacters(characters);
+
+            var result = builder.ToRegex();
+
+            result.Pattern.ShouldBe(@"^(?=.*[az^])(?!^\s|.*\s$).+$");
+        }
+
+        [TestCase("a^z")]
+        [TestCase("az^")]
+        [TestCase("^az")]
+        [TestCase("a^z")]
+        [TestCase(@"a\^z")]
+        public void Caret_In_Excluded_Characters_Placed_At_End_To_Avoid_Unintended_Negation(string characters)
+        {
+            var builder = PassphraseRegex.That.ExcludesCharacters(characters);
+
+            var result = builder.ToRegex();
+
+            result.Pattern.ShouldBe(@"^(?!.*[az^])(?!^\s|.*\s$).+$");
+        }
+
         [TestCase("[")]
         [TestCase("]")]
         [TestCase("-")]
+        [TestCase("^")]
         [TestCase("\\")]
         public void Included_Characters_Can_Handle_Character_Class_Considerations(string input)
         {
-            var builder = PassphraseRegex.That.IncludesAnyCharacters("[]-\\");
+            var builder = PassphraseRegex.That.IncludesAnyCharacters("[-]^\\");
 
             var result = builder.ToRegex();
 
             result.IsValid.ShouldBe(true);
-            result.Pattern.ShouldBe(@"^(?=.*[[\]\\-])(?!^\s|.*\s$).+$");
+            result.Pattern.ShouldBe(@"^(?=.*[[\]\\^-])(?!^\s|.*\s$).+$");
             Regex.IsMatch(input, result.Pattern).ShouldBe(true);
+        }
+
+        [TestCase("[")]
+        [TestCase("]")]
+        [TestCase("-")]
+        [TestCase("^")]
+        [TestCase("\\")]
+        public void Excluded_Characters_Can_Handle_Character_Class_Considerations(string input)
+        {
+            var builder = PassphraseRegex.That.ExcludesCharacters("[-]^\\");
+
+            var result = builder.ToRegex();
+
+            result.IsValid.ShouldBe(true);
+            result.Pattern.ShouldBe(@"^(?!.*[[\]\\^-])(?!^\s|.*\s$).+$");
+            Regex.IsMatch(input, result.Pattern).ShouldBe(false);
         }
 
         [Test]

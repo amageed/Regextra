@@ -26,6 +26,7 @@ namespace Regextra
     internal class PassphraseRegexBuilder : IPassphraseRegex, IPassphraseRegexOptions
     {
         private readonly Regex _dashMatcher = new Regex(@"\\?-");
+        private readonly Regex _caretMatcher = new Regex(@"\\?\^");
         private IList<IRule> _rules = new List<IRule>();
         private int _maxConsecutiveIdenticalCharacter;
         private int _minLength;
@@ -201,17 +202,23 @@ namespace Regextra
         private string SanitizeInput(string characters)
         {
             string sanitized = characters;
-            // remove all dashes and place one at the end to avoid an unintended range
-            if (_dashMatcher.IsMatch(characters))
-            {
-                sanitized = _dashMatcher.Replace(characters, "") + "-";
-            }
+            RemoveAndAppend(ref sanitized, _caretMatcher, "^");
+            RemoveAndAppend(ref sanitized, _dashMatcher, "-");
 
             // Regex.Escape is an option but since this input is used in a character class some of it is redundant and lengthens the pattern for no good reason
             // escape backslashes and escape closing square bracket to avoid potential character class issue when an opening square bracket occurs before it
             sanitized = sanitized.Replace(@"\", @"\\")
                                  .Replace("]", @"\]");
             return sanitized;
+        }
+
+        private void RemoveAndAppend(ref string input, Regex regex, string replacement) 
+        {
+            // avoid a blind replace; replacement value gets appended only if a match exists
+            if (regex.IsMatch(input))
+            {
+                input = regex.Replace(input, "") + replacement;
+            }
         }
     }
 }
