@@ -8,6 +8,10 @@ Currently, the project provides a Passphrase Regex Builder. Future plans include
 
 Check out the [wiki](https://github.com/amageed/Regextra/wiki) and visit the project's [demo site](http://softwareninjaneer.com/regextra) for more examples and a chance to try out some client-side validation. Also, the extensive [test suite](https://github.com/amageed/Regextra/tree/master/src/Tests) might be worth a look.
 
+Regextra is available via [NuGet](https://www.nuget.org/packages/Regextra/):
+
+    PM> Install-Package Regextra 
+
 ## Passphrase Regex Builder
 
 A common question I've seen on StackOverflow is how to write code that enforces strong passphrase or password rules. Popular responses tend to tackle the problem by using a regex with look-aheads. I've seen this so much that I decided to have fun writing a solution that allowed people to produce regex patterns that would enforce such rules.
@@ -49,6 +53,6 @@ This project isn't an attempt to write a fluent API for regular expressions in g
 
   - Ahmad Mageed ([@amageed](http://www.twitter.com/amageed))
 
-<hr />
+----------
 
 Regextra is Copyright © 2013-2014 [Ahmad Mageed](http://softwareninjaneer.com) under the [MIT license](https://github.com/amageed/Regextra/blob/master/LICENSE).
