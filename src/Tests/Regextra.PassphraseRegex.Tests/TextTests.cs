@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
-using Regextra;
 using Shouldly;
 
-namespace Tests
+namespace Regextra.PassphraseRegexTests
 {
     [TestFixture]
-    public class PassphraseRegexTextTests
+    public class TextTests
     {
         [Test]
         public void Can_Specify_Includes_Text_Rule()

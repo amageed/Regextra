@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regextra", "Regextra\Regextra.csproj", "{D8A9A4F3-C1BA-429D-9F65-DA792D262020}"
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regextra.PassphraseRegex", "Regextra.PassphraseRegex\Regextra.PassphraseRegex.csproj", "{D8A9A4F3-C1BA-429D-9F65-DA792D262020}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{A70FA85B-B653-42A7-8CE8-751BA95F5506}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regextra.PassphraseRegex.Tests", "tests\Regextra.PassphraseRegex.Tests\Regextra.PassphraseRegex.Tests.csproj", "{B6D60D15-E39D-4CDF-A242-19283311EE6A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +17,10 @@ Global
 		{D8A9A4F3-C1BA-429D-9F65-DA792D262020}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8A9A4F3-C1BA-429D-9F65-DA792D262020}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8A9A4F3-C1BA-429D-9F65-DA792D262020}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A70FA85B-B653-42A7-8CE8-751BA95F5506}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A70FA85B-B653-42A7-8CE8-751BA95F5506}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A70FA85B-B653-42A7-8CE8-751BA95F5506}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A70FA85B-B653-42A7-8CE8-751BA95F5506}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6D60D15-E39D-4CDF-A242-19283311EE6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6D60D15-E39D-4CDF-A242-19283311EE6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6D60D15-E39D-4CDF-A242-19283311EE6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6D60D15-E39D-4CDF-A242-19283311EE6A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
