@@ -7,7 +7,7 @@ namespace Regextra
 {
     public static class Template
     {
-        private readonly static string _templatePattern = "(?<StartDelimiter>{+)(?<Property>.+?)(?<EndDelimiter>}+)";
+        private readonly static string _templatePattern = "(?<StartDelimiter>{+)(?<Property>.+?)(?::(?<Format>.+?))?(?<EndDelimiter>}+)";
         private readonly static string _escapeTokenPattern = @"({|})\1";
         private readonly static Regex _templateRegex = new Regex(_templatePattern, RegexOptions.Compiled);
         private readonly static Regex _escapeTokenRegex = new Regex(_escapeTokenPattern, RegexOptions.Compiled);
@@ -16,6 +16,7 @@ namespace Regextra
         private readonly static string START_DELIMITER = "StartDelimiter";
         private readonly static string END_DELIMITER = "EndDelimiter";
         private readonly static string PROPERTY = "Property";
+        private readonly static string FORMAT = "Format";
 
         public static string Format<T>(string template, T item) where T : class
         {
@@ -29,7 +30,16 @@ namespace Regextra
                 if (propertyInfo == null)
                     throw new MissingFieldException(type.Name, m.Groups[PROPERTY].Value);
 
-                var property = propertyInfo.GetValue(item, null).ToString();
+                string property = null;
+                if (m.Groups[FORMAT].Value != String.Empty)
+                {
+                    var format = "{0:" + m.Groups[FORMAT].Value + "}";
+                    property = String.Format(format, propertyInfo.GetValue(item, null));
+                }
+                else
+                {
+                    property = propertyInfo.GetValue(item, null).ToString();
+                }
 
                 if (IsPartiallyEscaped(m))
                     property = FormatPartiallyEscapedToken(m, property);
