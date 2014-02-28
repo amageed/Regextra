@@ -41,32 +41,47 @@ namespace Regextra.Tests.TemplateTests
             ex.Message.ShouldContain(".Animal1");
         }
 
-        [TestCase("{Name}", "Ahmad")]
-        [TestCase("{{Name}}", "{Name}")]
-        [TestCase("{{{Name}}}", "{Ahmad}")]
-        [TestCase("{{{{Name}}}}", "{{Name}}")]
-        [TestCase("{{{{{Name}}}}}", "{{Ahmad}}")]
-        public void Template_Delimiters_Are_Escaped_When_Doubled_Up(string template, string expected)
-        {
-            var result = Template.Format(template, new { Name = "Ahmad" });
-
-            result.ShouldBe(expected);
-        }
-
         [TestCase("{Name", "{Name")]
         [TestCase("{{Name", "{{Name")]
         [TestCase("Name}", "Name}")]
         [TestCase("Name}}", "Name}}")]
-        public void Template_Delimiters_Are_Ignored_When_Unbalanced(string template, string expected)
+        public void Template_Delimiters_Are_Ignored_When_One_Sided(string template, string expected)
         {
             var result = Template.Format(template, new { Name = "Ahmad" });
 
             result.ShouldBe(expected);
         }
 
-        [TestCase("{{Name}", "{Ahmad")]
-        [TestCase("{Name}}", "Ahmad}")]
-        public void Template_Is_Formatted_When_Tokens_Are_Partially_Balanced(string template, string expected)
+        [TestCase("{{Name}}", "{Name}")]
+        [TestCase("{{{{Name}}}}", "{{Name}}")]
+        public void Balanced_Even_Delimiters_Are_Escaped(string template, string expected)
+        {
+            var result = Template.Format(template, new { Name = "Ahmad" });
+
+            result.ShouldBe(expected);
+        }
+
+        [TestCase("{Name}", "Ahmad")]
+        [TestCase("{{{Name}}}", "{Ahmad}")]
+        public void Balanced_Odd_Delimiters_Yield_Trimmed_Delimiters_And_Property_Value(string template, string expected)
+        {
+            var result = Template.Format(template, new { Name = "Ahmad" });
+
+            result.ShouldBe(expected);
+        }
+
+        [TestCase("{{{Name}", "{Ahmad")]
+        [TestCase("{Name}}}", "Ahmad}")]
+        public void Template_Is_Formatted_With_Odd_Delimiter_Pairs(string template, string expected)
+        {
+            var result = Template.Format(template, new { Name = "Ahmad" });
+
+            result.ShouldBe(expected);
+        }
+
+        [TestCase("{{Name}", "{Name}")]
+        [TestCase("{Name}}", "{Name}")]
+        public void Template_Is_Escaped_With_Even_And_Odd_Delimiter_Pairs(string template, string expected)
         {
             var result = Template.Format(template, new { Name = "Ahmad" });
 
@@ -80,7 +95,7 @@ namespace Regextra.Tests.TemplateTests
             var template = "{Item:N}";
             var expected = guid.ToString("N");
 
-            var result = Template.Format(template, new { Item = guid });
+            var result = template.TemplateFormat(new { Item = guid });
 
             result.ShouldBe(expected);
         }
