@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
-using FastMember;
 
 namespace Regextra
 {
-    public static class Template
+    public static class TemplateReflection
     {
         private readonly static string _templatePattern = "(?<StartDelimiter>{+)(?<Property>.+?)(?::(?<Format>.+?))?(?<EndDelimiter>}+)";
         private readonly static string _escapeTokenPattern = @"({|})\1";
@@ -59,24 +59,21 @@ namespace Regextra
 
         private static string GetSinglePropertyValue(object item, Match m)
         {
-            object current;
-            try
+            var type = item.GetType();
+            var propInfo = type.GetProperty(m.Groups[PROPERTY].Value);
+            if (propInfo == null)
             {
-                current = ObjectAccessor.Create(item)[m.Groups[PROPERTY].Value];
-            }
-            catch (ArgumentOutOfRangeException ex)
-            {
-                throw new MissingFieldException(item.GetType().Name, m.Groups[PROPERTY].Value);
+                throw new MissingFieldException(type.Name, m.Groups[PROPERTY].Value);
             }
 
             string property = null;
             if (m.Groups[FORMAT].Value != String.Empty)
             {
-                property = FormatProperty(current, m);
+                property = FormatProperty(item, m, propInfo);
             }
             else
             {
-                property = current.ToString();
+                property = propInfo.GetValue(item, null).ToString();
             }
 
             return property;
@@ -85,27 +82,27 @@ namespace Regextra
         private static string GetNestedPropertyValue(object item, Match m)
         {
             string[] properties = m.Groups[PROPERTY].Value.Split('.');
+            object parent = null;
             object current = item;
-            int index = 0;
+            PropertyInfo propInfo = null;
 
-            try
+            for (int index = 0; index < properties.Length; index++)
             {
-                while (index < properties.Length)
+                parent = current;
+                propInfo = current.GetType().GetProperty(properties[index]);
+
+                if (propInfo == null)
                 {
-                    string prop = properties[index];
-                    current = ObjectAccessor.Create(current)[prop];
-                    index++;
+                    var chain = GetFailedPropertyChain(properties, index);
+                    throw new MissingFieldException(chain.Item1, chain.Item2);
                 }
+
+                current = propInfo.GetValue(current, null);
             }
-            catch (ArgumentOutOfRangeException ex)
-            {
-                var chain = GetFailedPropertyChain(properties, index);
-                throw new MissingFieldException(chain.Item1, chain.Item2);
-            }            
 
             if (m.Groups[FORMAT].Value != String.Empty)
             {
-                string result = FormatProperty(current, m);
+                string result = FormatProperty(parent, m, propInfo);
                 return result;
             }
             else
@@ -114,10 +111,10 @@ namespace Regextra
             }
         }
 
-        private static string FormatProperty(object item, Match m)
+        private static string FormatProperty(object item, Match m, PropertyInfo propertyInfo)
         {
             var format = String.Concat("{0:", m.Groups[FORMAT].Value, "}");
-            var property = String.Format(format, item);
+            var property = String.Format(format, propertyInfo.GetValue(item, null));
             return property;
         }
 

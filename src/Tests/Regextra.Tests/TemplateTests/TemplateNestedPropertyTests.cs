@@ -30,7 +30,17 @@ namespace Regextra.Tests.TemplateTests
 
             var result = Template.Format(template, person);
 
-            result.ShouldBe(person.Address.ZipCode.Item1);
+            result.ShouldBe(person.Address.ZipCode.Item1.ToString());
+        }
+
+        [TestCase("{Address.PostalCode}", "Address.PostalCode")]
+        [TestCase("{Address.ZipCode.Foo.Item42}", "Address.ZipCode.Foo")]
+        public void Template_Throws_MissingFieldException_When_Object_Is_Missing_A_Nested_Property(string template, string property)
+        {
+            var person = GeneratePersonMock();
+
+            var ex = Should.Throw<MissingFieldException>(() => Template.Format(template, person));
+            ex.Message.ShouldContain(property);
         }
 
         [Test]

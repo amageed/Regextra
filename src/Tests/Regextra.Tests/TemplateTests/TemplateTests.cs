@@ -95,7 +95,7 @@ namespace Regextra.Tests.TemplateTests
             var template = "{Item:N}";
             var expected = guid.ToString("N");
 
-            var result = template.TemplateFormat(new { Item = guid });
+            var result = Template.Format(template, new { Item = guid });
 
             result.ShouldBe(expected);
         }
