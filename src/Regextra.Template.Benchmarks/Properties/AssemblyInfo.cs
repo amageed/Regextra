@@ -5,9 +5,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Regextra")]
-[assembly: AssemblyDescription("Regextra simplifies some tasks typically solved via regex so that you no longer have (problems){2}")]
-[assembly: AssemblyCompany("Ahmad Mageed")]
+[assembly: AssemblyTitle("Regextra.Template.Benchmarks")]
 [assembly: AssemblyProduct("Regextra")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 
@@ -17,6 +15,6 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("0106694d-6479-4508-ad14-1ee83ec2bda2")]
+[assembly: Guid("ad933dd9-acff-4063-93b2-681b426e4317")]
 
-[assembly: AssemblyVersion("0.2.0")]
+[assembly: AssemblyVersion("0.1.0")]

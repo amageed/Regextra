@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using NUnit.Framework;
 using Shouldly;
 
-namespace Regextra.PassphraseRegexTests
+namespace Regextra.Tests.PassphraseRegexTests
 {
     [TestFixture]
     public class CharactersTests
