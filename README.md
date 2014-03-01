@@ -1,12 +1,12 @@
 # Regextra
 
-Regextra is a small library built to solve problems that are handily addressed by regular expressions.
+Regextra is a small library built to address problems that are handily solved by regular expressions.
 
-Currently, the project provides a Passphrase Regex Builder. Future plans include simple template formatting, and methods for common string manipulation scenarios.
+Currently, the library offers a *Passphrase Regex Builder* and *Template Formatting*. Future plans include methods for common string manipulation scenarios.
 
 ## How do I get started?
 
-Check out the [wiki](https://github.com/amageed/Regextra/wiki) and visit the project's [demo site](http://softwareninjaneer.com/regextra) for more examples and a chance to try out some client-side validation. Also, the extensive [test suite](https://github.com/amageed/Regextra/tree/master/src/Tests) might be worth a look.
+Check out the [wiki](https://github.com/amageed/Regextra/wiki) and visit the project's [demo site](http://softwareninjaneer.com/regextra) for a chance to try out some client-side validation (using the patterns produced by the `PassphraseRegex` builder). Also, the extensive [test suite](https://github.com/amageed/Regextra/tree/master/src/Tests) is worth a glance.
 
 Regextra is available via [NuGet](https://www.nuget.org/packages/Regextra/):
 
@@ -45,9 +45,36 @@ The following code generates a pattern to enforce a password of 8-25 characters 
 	    Console.WriteLine(result.Error);
 	}
     
-## What this project is not
+## Template Formatting
 
-This project isn't an attempt to write a fluent API for regular expressions in general. Learning regex is a better option IMO :)
+Template formatting allows you to perform named formatting on a string template using an object's matching properties. It's available via the static `Template.Format` method and the string extension method, `TemplateFormat`. The formatter features:
+
+  - Nested Properties
+  - Standard/Custom string formatting
+  - Escaping of properties
+  - Detailed exception messages to pinpoint missing properties
+  - Great performance (in part thanks to [FastMember](http://code.google.com/p/fast-member/))
+
+### Example usage
+
+	var order = new
+	{
+	    Description = "Widget",
+	    OrderDate = DateTime.Now,
+	    Details = new
+	    {
+	        UnitPrice = 1500
+	    }
+	};
+	
+	string template = "We just shipped your order of '{Description}', placed on {OrderDate:d}. Your {{credit}} card will be billed {Details.UnitPrice:C}.";
+	
+	string result = Template.Format(template, order);
+	// or use the extension: template.TemplateFormat(order);
+
+The result of the code is:
+
+> We just shipped your order of 'Widget', placed on 2/28/2014. Your {credit} card will be billed $1,500.00.
 
 ## Core Contributor
 
