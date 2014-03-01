@@ -19,7 +19,7 @@ namespace Regextra
         private readonly static string PROPERTY = "Property";
         private readonly static string FORMAT = "Format";
 
-        public static string TemplateFormat(this string template, object item)
+        public static string FormatTemplate(this string template, object item)
         {
             return Format(template, item);
         }

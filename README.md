@@ -47,7 +47,7 @@ The following code generates a pattern to enforce a password of 8-25 characters 
     
 ## Template Formatting
 
-Template formatting allows you to perform named formatting on a string template using an object's matching properties. It's available via the static `Template.Format` method and the string extension method, `TemplateFormat`. The formatter features:
+Template formatting allows you to perform named formatting on a string template using an object's matching properties. It's available via the static `Template.Format` method and the string extension method, `FormatTemplate`. The formatter features:
 
   - Nested Properties
   - Standard/Custom string formatting
@@ -70,7 +70,7 @@ Template formatting allows you to perform named formatting on a string template 
 	string template = "We just shipped your order of '{Description}', placed on {OrderDate:d}. Your {{credit}} card will be billed {Details.UnitPrice:C}.";
 	
 	string result = Template.Format(template, order);
-	// or use the extension: template.TemplateFormat(order);
+	// or use the extension: template.FormatTemplate(order);
 
 The result of the code is:
 
