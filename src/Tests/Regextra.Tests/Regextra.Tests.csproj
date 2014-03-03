@@ -55,11 +55,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PassphraseRegexTests\CharactersTests.cs" />
-    <Compile Include="PassphraseRegexTests\GeneralTests.cs" />
+    <Compile Include="PassphraseRegexTests\PassphraseRegexCharactersTests.cs" />
+    <Compile Include="PassphraseRegexTests\PassphraseRegexGeneralTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PassphraseRegexTests\RangeTests.cs" />
-    <Compile Include="PassphraseRegexTests\TextTests.cs" />
+    <Compile Include="PassphraseRegexTests\PassphraseRegexRangeTests.cs" />
+    <Compile Include="PassphraseRegexTests\PassphraseRegexTextTests.cs" />
     <Compile Include="TemplateTests\Models\Address.cs" />
     <Compile Include="TemplateTests\Models\Person.cs" />
     <Compile Include="TemplateTests\TemplateNestedPropertyTests.cs" />
@@ -73,9 +73,9 @@
       <Project>{d8a9a4f3-c1ba-429d-9f65-da792d262020}</Project>
       <Name>Regextra.PassphraseRegex</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Regextra.Template\Regextra.Template.csproj">
+    <ProjectReference Include="..\..\Regextra\Regextra.csproj">
       <Project>{a7501e06-391f-4b3e-bb3f-342781b94569}</Project>
-      <Name>Regextra.Template</Name>
+      <Name>Regextra</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

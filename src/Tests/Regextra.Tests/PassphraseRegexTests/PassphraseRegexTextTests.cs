@@ -8,7 +8,7 @@ using Shouldly;
 namespace Regextra.Tests.PassphraseRegexTests
 {
     [TestFixture]
-    public class TextTests
+    public class PassphraseRegexTextTests
     {
         [Test]
         public void Can_Specify_Includes_Text_Rule()

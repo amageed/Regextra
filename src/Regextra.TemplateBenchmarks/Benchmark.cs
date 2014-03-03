@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace TemplatePerformanceBenchmarks
+namespace Regextra.TemplatePerformanceBenchmarks
 {
     public class Benchmark
     {
