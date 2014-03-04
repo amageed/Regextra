@@ -76,6 +76,12 @@ The result of the code is:
 
 > We just shipped your order of 'Widget', placed on 2/28/2014. Your {credit} card will be billed $1,500.00.
 
+## OSS Libraries Used
+
+Regextra makes use of the following OSS libraries:
+
+  - [FastMember](http://code.google.com/p/fast-member/) ([License](http://www.apache.org/licenses/LICENSE-2.0)). 
+
 ## Core Contributor
 
   - Ahmad Mageed ([@amageed](http://www.twitter.com/amageed))

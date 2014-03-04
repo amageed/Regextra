@@ -13,4 +13,7 @@
     <copyright>Copyright 2013-2014</copyright>
     <tags>Regextra Regex Regular Expressions Passphrase Password Validation Named Template Format</tags>
   </metadata>
+  <files>
+    <file src="..\..\lib\**\*.*" target="lib" />
+  </files>
 </package>
