@@ -8,7 +8,7 @@ using Shouldly;
 namespace Regextra.Tests.PassphraseRegexTests
 {
     [TestFixture]
-    public class CharactersTests
+    public class PassphraseRegexCharactersTests
     {
         [Test]
         public void Can_Specify_Contained_Characters()

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package >
+<package>
   <metadata>
     <id>$id$</id>
     <version>$version$</version>
@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/amageed/Regextra</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <copyright>Copyright 2014</copyright>
-    <tags>Regextra Regex Regular Expressions Passphrase Password Validation</tags>
+    <copyright>Copyright 2013-2014</copyright>
+    <tags>Regextra Regex Regular Expressions Passphrase Password Validation Named Template Format</tags>
   </metadata>
 </package>

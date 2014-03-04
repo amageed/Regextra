@@ -8,7 +8,7 @@ using Shouldly;
 namespace Regextra.Tests.PassphraseRegexTests
 {
     [TestFixture]
-    public class RangeTests
+    public class PassphraseRegexRangeTests
     {
         [Test]
         public void Can_Specify_Range_Rule()

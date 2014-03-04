@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Regextra;
+using Regextra.TemplatePerformanceBenchmarks.Formatters;
 using Regextra.TemplatePerformanceBenchmarks.Models;
 using SmartFormat;
 
-namespace TemplatePerformanceBenchmarks
+namespace Regextra.TemplatePerformanceBenchmarks
 {
     class Program
     {

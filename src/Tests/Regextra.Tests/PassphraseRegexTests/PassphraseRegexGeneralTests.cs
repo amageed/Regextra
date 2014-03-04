@@ -8,7 +8,7 @@ using Shouldly;
 namespace Regextra.Tests.PassphraseRegexTests
 {
     [TestFixture]
-    public class GeneralTests
+    public class PassphraseRegexGeneralTests
     {
         [Test]
         public void Invalid_Result_When_Rules_Are_Empty()
