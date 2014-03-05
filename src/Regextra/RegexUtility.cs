@@ -1,32 +1,37 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Regextra
 {
     public static class RegexUtility
     {
-        public static string[] SplitIncludeDelimiters(string input,
-            string[] delimiters,
-            RegexOptions regexOptions = RegexOptions.None,
+        public static string[] Split(string input, 
+            string[] delimiters, 
+            RegexOptions regexOptions = RegexOptions.None, 
             RegextraSplitOptions splitOptions = RegextraSplitOptions.None)
         {
             if (delimiters == null || delimiters.Length == 0)
                 throw new ArgumentException("Delimiters can't be empty", "delimiters");
 
-            var pattern = "(" + String.Join("|", delimiters.Select(d => Regex.Escape(d))) + ")";
+            var pattern = new StringBuilder(String.Join("|", delimiters.Select(d => Regex.Escape(d))));
 
+            if (splitOptions.HasFlag(RegextraSplitOptions.IncludeDelimiters))
+            {
+                PrefixSuffix(pattern, "(", ")");
+            }
             if (splitOptions.HasFlag(RegextraSplitOptions.MatchWholeWords))
             {
-                pattern = PrefixSuffixString(pattern, @"\b");
+                PrefixSuffix(pattern, @"\b");
             }
             if (splitOptions.HasFlag(RegextraSplitOptions.TrimWhitespace))
             {
-                pattern = PrefixSuffixString(pattern, @"\s*");
+                PrefixSuffix(pattern, @"\s*");
             }
 
-            string[] result = Regex.Split(input, pattern, regexOptions);
+            string[] result = Regex.Split(input, pattern.ToString(), regexOptions);
             if (splitOptions.HasFlag(RegextraSplitOptions.RemoveEmptyEntries))
             {
                 result = RemoveEmptyEntries(result);
@@ -34,9 +39,14 @@ namespace Regextra
             return result;
         }
 
-        private static string PrefixSuffixString(string input, string prefixSuffix)
+        private static void PrefixSuffix(StringBuilder input, string prefixSuffix)
         {
-            return prefixSuffix + input + prefixSuffix;
+            input.Insert(0, prefixSuffix).Append(prefixSuffix);
+        }
+
+        private static void PrefixSuffix(StringBuilder input, string prefix, string suffix)
+        {
+            input.Insert(0, prefix).Append(suffix);
         }
 
         private static string[] RemoveEmptyEntries(string[] input)
