@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Regextra
 {
     public static class RegexUtility
     {
-        public static string[] SplitKeepDelimiters(string input,
+        public static string[] SplitIncludeDelimiters(string input,
             string[] delimiters,
             RegexOptions regexOptions = RegexOptions.None,
             RegextraSplitOptions splitOptions = RegextraSplitOptions.None)
@@ -16,34 +15,28 @@ namespace Regextra
             if (delimiters == null || delimiters.Length == 0)
                 throw new ArgumentException("Delimiters can't be empty", "delimiters");
 
-            var delimiterPattern = "(" + String.Join("|", delimiters.Select(d => Regex.Escape(d))) + ")";
+            var pattern = "(" + String.Join("|", delimiters.Select(d => Regex.Escape(d))) + ")";
 
-            string[] result;
-            if (splitOptions == RegextraSplitOptions.None || splitOptions == RegextraSplitOptions.RemoveEmptyEntries)
+            if (splitOptions.HasFlag(RegextraSplitOptions.MatchWholeWords))
             {
-                result = Regex.Split(input, delimiterPattern, regexOptions);
+                pattern = PrefixSuffixString(pattern, @"\b");
             }
-            else
+            if (splitOptions.HasFlag(RegextraSplitOptions.TrimWhitespace))
             {
-                StringBuilder pattern = new StringBuilder(delimiterPattern);
-
-                if (splitOptions.HasFlag(RegextraSplitOptions.MatchWholeWords))
-                {
-                    pattern.Insert(0, @"\b").Append(@"\b");
-                }
-                if (splitOptions.HasFlag(RegextraSplitOptions.TrimWhitespace))
-                {
-                    pattern.Insert(0, @"\s*").Append(@"\s*");
-                }
-
-                result = Regex.Split(input, pattern.ToString(), regexOptions);
+                pattern = PrefixSuffixString(pattern, @"\s*");
             }
 
+            string[] result = Regex.Split(input, pattern, regexOptions);
             if (splitOptions.HasFlag(RegextraSplitOptions.RemoveEmptyEntries))
             {
                 result = RemoveEmptyEntries(result);
             }
             return result;
+        }
+
+        private static string PrefixSuffixString(string input, string prefixSuffix)
+        {
+            return prefixSuffix + input + prefixSuffix;
         }
 
         private static string[] RemoveEmptyEntries(string[] input)

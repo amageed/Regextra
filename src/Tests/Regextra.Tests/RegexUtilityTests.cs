@@ -16,7 +16,7 @@ namespace Regextra.Tests
             string input = "123xx456yy789";
             string[] delimiters = null;
 
-            var ex = Should.Throw<ArgumentException>(() => RegexUtility.SplitKeepDelimiters(input, delimiters));
+            var ex = Should.Throw<ArgumentException>(() => RegexUtility.SplitIncludeDelimiters(input, delimiters));
 
             ex.ParamName.ShouldBe("delimiters");
         }
@@ -27,7 +27,7 @@ namespace Regextra.Tests
             string input = "123xx456yy789";
             string[] delimiters = {};
 
-            var ex = Should.Throw<ArgumentException>(() => RegexUtility.SplitKeepDelimiters(input, delimiters));
+            var ex = Should.Throw<ArgumentException>(() => RegexUtility.SplitIncludeDelimiters(input, delimiters));
 
             ex.ParamName.ShouldBe("delimiters");
         }
@@ -39,7 +39,7 @@ namespace Regextra.Tests
             string[] delimiters = { "xx", "yy" };
             string[] expected = { "123", "xx", "456", "yy", "789" };
             
-            var result = RegexUtility.SplitKeepDelimiters(input, delimiters);
+            var result = RegexUtility.SplitIncludeDelimiters(input, delimiters);
 
             result.ShouldBe(expected);
         }
@@ -51,7 +51,7 @@ namespace Regextra.Tests
             string[] delimiters = { "xyz" };
             string[] expected = { input };
             
-            var result = RegexUtility.SplitKeepDelimiters(input, delimiters);
+            var result = RegexUtility.SplitIncludeDelimiters(input, delimiters);
 
             result.ShouldBe(expected);
         }
@@ -63,7 +63,7 @@ namespace Regextra.Tests
             string[] delimiters = { "xyz" };
             string[] expected = { "123", "XYZ", "456" };
 
-            var result = RegexUtility.SplitKeepDelimiters(input, delimiters, RegexOptions.IgnoreCase);
+            var result = RegexUtility.SplitIncludeDelimiters(input, delimiters, RegexOptions.IgnoreCase);
 
             result.ShouldBe(expected);
         }
@@ -75,7 +75,7 @@ namespace Regextra.Tests
             string[] delimiters = { "()", ".", "?" };
             string[] expected = { "", "()", " Hello ", ".", " World", "?", "" };
 
-            var result = RegexUtility.SplitKeepDelimiters(input, delimiters);
+            var result = RegexUtility.SplitIncludeDelimiters(input, delimiters);
 
             result.ShouldBe(expected);
         }
@@ -87,7 +87,7 @@ namespace Regextra.Tests
             string[] delimiters = { "()", ".", "?" };
             string[] expected = { "()", " Hello ", ".", " World", "?" };
 
-            var result = RegexUtility.SplitKeepDelimiters(input, delimiters, splitOptions: RegextraSplitOptions.RemoveEmptyEntries);
+            var result = RegexUtility.SplitIncludeDelimiters(input, delimiters, splitOptions: RegextraSplitOptions.RemoveEmptyEntries);
 
             result.ShouldBe(expected);
         }
@@ -99,7 +99,7 @@ namespace Regextra.Tests
             string[] delimiters = { "." };
             string[] expected = { "Hello", ".", "World" };
 
-            var result = RegexUtility.SplitKeepDelimiters(input, delimiters, splitOptions: RegextraSplitOptions.TrimWhitespace);
+            var result = RegexUtility.SplitIncludeDelimiters(input, delimiters, splitOptions: RegextraSplitOptions.TrimWhitespace);
 
             result.ShouldBe(expected);
         }
@@ -111,7 +111,7 @@ namespace Regextra.Tests
             string[] delimiters = { "Stack" };
             string[] expected = { "Stack", "Overflow ", "Stack", " Over", "Stack" };
 
-            var result = RegexUtility.SplitKeepDelimiters(input, delimiters, splitOptions: RegextraSplitOptions.RemoveEmptyEntries);
+            var result = RegexUtility.SplitIncludeDelimiters(input, delimiters, splitOptions: RegextraSplitOptions.RemoveEmptyEntries);
 
             result.ShouldBe(expected);
         }
@@ -123,7 +123,7 @@ namespace Regextra.Tests
             string[] delimiters = { "Stack" };
             string[] expected = { "StackOverflow ", "Stack", " OverStack" };
 
-            var result = RegexUtility.SplitKeepDelimiters(input, delimiters, splitOptions: RegextraSplitOptions.MatchWholeWords);
+            var result = RegexUtility.SplitIncludeDelimiters(input, delimiters, splitOptions: RegextraSplitOptions.MatchWholeWords);
 
             result.ShouldBe(expected);
         }
@@ -136,7 +136,7 @@ namespace Regextra.Tests
             var splitOptions = RegextraSplitOptions.MatchWholeWords | RegextraSplitOptions.TrimWhitespace;
             string[] expected = { "StackOverflow", "Stack", "OverStack" };
             
-            var result = RegexUtility.SplitKeepDelimiters(input, delimiters, splitOptions: splitOptions);
+            var result = RegexUtility.SplitIncludeDelimiters(input, delimiters, splitOptions: splitOptions);
 
             result.ShouldBe(expected);
         }
@@ -149,7 +149,7 @@ namespace Regextra.Tests
             var splitOptions = RegextraSplitOptions.MatchWholeWords | RegextraSplitOptions.TrimWhitespace | RegextraSplitOptions.RemoveEmptyEntries;
             string[] expected = { "Stack", "StackOverflow", "Stack", "OverStack", "Stack" };
 
-            var result = RegexUtility.SplitKeepDelimiters(input, delimiters, splitOptions: splitOptions);
+            var result = RegexUtility.SplitIncludeDelimiters(input, delimiters, splitOptions: splitOptions);
 
             result.ShouldBe(expected);
         }
