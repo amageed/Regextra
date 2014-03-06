@@ -25,7 +25,7 @@ namespace Regextra.Tests
         public void Split_Throws_ArgumentException_For_Empty_Delimiters()
         {
             string input = "123xx456yy789";
-            string[] delimiters = {};
+            string[] delimiters = { };
 
             var ex = Should.Throw<ArgumentException>(() => RegexUtility.Split(input, delimiters));
 
@@ -33,12 +33,12 @@ namespace Regextra.Tests
         }
 
         [Test]
-        public void Split_Can_Return_Items_And_Delimiters()
+        public void Split_Can_Include_Delimiters()
         {
             string input = "123xx456yy789";
             string[] delimiters = { "xx", "yy" };
             string[] expected = { "123", "xx", "456", "yy", "789" };
-            
+
             var result = RegexUtility.Split(input, delimiters, splitOptions: RegextraSplitOptions.IncludeDelimiters);
 
             result.ShouldBe(expected);
@@ -94,7 +94,7 @@ namespace Regextra.Tests
         }
 
         [Test]
-        public void Split_Can_TrimWhitespace()
+        public void Split_Can_Trim_Whitespace()
         {
             string input = "Hello . World";
             string[] delimiters = { "." };
@@ -139,7 +139,7 @@ namespace Regextra.Tests
             string[] delimiters = { "Stack" };
             string[] expected = { "StackOverflow", "Stack", "OverStack" };
             var splitOptions = RegextraSplitOptions.IncludeDelimiters | RegextraSplitOptions.MatchWholeWords | RegextraSplitOptions.TrimWhitespace;
-            
+
             var result = RegexUtility.Split(input, delimiters, splitOptions: splitOptions);
 
             result.ShouldBe(expected);
@@ -154,6 +154,62 @@ namespace Regextra.Tests
 
             var result = RegexUtility.Split(input, delimiters, splitOptions: RegextraSplitOptions.All);
 
+            result.ShouldBe(expected);
+        }
+
+        [Test]
+        public void SplitIncludeDelimiters_Matches_Core_Split_With_Same_Option()
+        {
+            string input = "123xx456yy789";
+            string[] delimiters = { "xx", "yy" };
+            string[] expected = { "123", "xx", "456", "yy", "789" };
+
+            var coreSplit = RegexUtility.Split(input, delimiters, splitOptions: RegextraSplitOptions.IncludeDelimiters);
+            var result = RegexUtility.SplitIncludeDelimiters(input, delimiters);
+
+            result.ShouldBe(coreSplit);
+            result.ShouldBe(expected);
+        }
+
+        [Test]
+        public void SplitMatchWholeWords_Matches_Core_Split_With_Same_Option()
+        {
+            string input = "StackOverflow Stack OverStack";
+            string[] delimiters = { "Stack" };
+            string[] expected = { "StackOverflow ", " OverStack" };
+
+            var coreSplit = RegexUtility.Split(input, delimiters, splitOptions: RegextraSplitOptions.MatchWholeWords);
+            var result = RegexUtility.SplitMatchWholeWords(input, delimiters);
+
+            result.ShouldBe(coreSplit);
+            result.ShouldBe(expected);
+        }
+
+        [Test]
+        public void SplitTrimWhitespace_Matches_Core_Split_With_Same_Option()
+        {
+            string input = "Hello . World";
+            string[] delimiters = { "." };
+            string[] expected = { "Hello", "World" };
+
+            var coreSplit = RegexUtility.Split(input, delimiters, splitOptions: RegextraSplitOptions.TrimWhitespace);
+            var result = RegexUtility.SplitTrimWhitespace(input, delimiters);
+
+            result.ShouldBe(coreSplit);
+            result.ShouldBe(expected);
+        }
+
+        [Test]
+        public void SplitRemoveEmptyEntries_Matches_Core_Split_With_Same_Option()
+        {
+            string input = "() Hello . World?";
+            string[] delimiters = { "()", ".", "?" };
+            string[] expected = { " Hello ", " World" };
+
+            var coreSplit = RegexUtility.Split(input, delimiters, splitOptions: RegextraSplitOptions.RemoveEmptyEntries);
+            var result = RegexUtility.SplitRemoveEmptyEntries(input, delimiters);
+
+            result.ShouldBe(coreSplit);
             result.ShouldBe(expected);
         }
     }

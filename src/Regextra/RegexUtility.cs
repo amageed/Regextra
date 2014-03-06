@@ -8,9 +8,9 @@ namespace Regextra
 {
     public static class RegexUtility
     {
-        public static string[] Split(string input, 
-            string[] delimiters, 
-            RegexOptions regexOptions = RegexOptions.None, 
+        public static string[] Split(string input,
+            string[] delimiters,
+            RegexOptions regexOptions = RegexOptions.None,
             RegextraSplitOptions splitOptions = RegextraSplitOptions.None)
         {
             if (delimiters == null || delimiters.Length == 0)
@@ -18,6 +18,7 @@ namespace Regextra
 
             var pattern = new StringBuilder(String.Join("|", delimiters.Select(d => Regex.Escape(d))));
 
+            // pattern building order matters: IncludeDelimiters must occur first if selected
             if (splitOptions.HasFlag(RegextraSplitOptions.IncludeDelimiters))
             {
                 PrefixSuffix(pattern, "(", ")");
@@ -37,6 +38,26 @@ namespace Regextra
                 result = RemoveEmptyEntries(result);
             }
             return result;
+        }
+
+        public static string[] SplitIncludeDelimiters(string input, string[] delimiters, RegexOptions regexOptions = RegexOptions.None)
+        {
+            return Split(input, delimiters, regexOptions, RegextraSplitOptions.IncludeDelimiters);
+        }
+
+        public static string[] SplitMatchWholeWords(string input, string[] delimiters, RegexOptions regexOptions = RegexOptions.None)
+        {
+            return Split(input, delimiters, regexOptions, RegextraSplitOptions.MatchWholeWords);
+        }
+
+        public static string[] SplitTrimWhitespace(string input, string[] delimiters, RegexOptions regexOptions = RegexOptions.None)
+        {
+            return Split(input, delimiters, regexOptions, RegextraSplitOptions.TrimWhitespace);
+        }
+
+        public static string[] SplitRemoveEmptyEntries(string input, string[] delimiters, RegexOptions regexOptions = RegexOptions.None)
+        {
+            return Split(input, delimiters, regexOptions, RegextraSplitOptions.RemoveEmptyEntries);
         }
 
         private static void PrefixSuffix(StringBuilder input, string prefixSuffix)
