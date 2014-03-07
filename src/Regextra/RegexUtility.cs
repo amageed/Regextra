@@ -9,6 +9,8 @@ namespace Regextra
     public static class RegexUtility
     {
         private static readonly Regex _trimWhitespacesRegex = new Regex(@"^\s+|\s+$|(\s)\1+", RegexOptions.Compiled);
+        private static readonly Regex _formatCamelCaseRegex = new Regex(@"\s*(?<!^)([A-Z][a-z]|(?<=[a-z])[A-Z]|(?<=[A-Za-z])[0-9])\s*", RegexOptions.Compiled);
+        private static readonly Regex _formatCamelCaseCapitalizeRegex = new Regex(@"\b(?<LowerCaseChar>[a-z])(?=[a-z]*[A-Z])|\s*(?<!^)([A-Z][a-z]|(?<=[a-z])[A-Z]|(?<=[a-zA-Z])[0-9])\s*", RegexOptions.Compiled);
 
         public static string[] Split(string input,
             string[] delimiters,
@@ -16,7 +18,9 @@ namespace Regextra
             RegextraSplitOptions splitOptions = RegextraSplitOptions.None)
         {
             if (delimiters == null || delimiters.Length == 0)
+            {
                 throw new ArgumentException("Delimiters can't be empty", "delimiters");
+            }
 
             var pattern = new StringBuilder(String.Join("|", delimiters.Select(d => Regex.Escape(d))));
 
@@ -71,7 +75,51 @@ namespace Regextra
 
         public static string TrimWhitespaces(string input)
         {
-            return _trimWhitespacesRegex.Replace(input, "$1");
+            var result = _trimWhitespacesRegex.Replace(input, "$1");
+            return result;
+        }
+
+        /// <summary>
+        /// Formats PascalCase (upper CamelCase) and (lower) camelCase words to a friendly format separated by the given delimiter (space by default).
+        /// </summary>
+        /// <param name="input">CamelCase input to format</param>
+        /// <param name="delimiter">Delimiter to use for formatting (space by default)</param>
+        /// <param name="capitalizeFirstCharacter">Capitalize the first character for (lower) camelCase words (false by default)</param>
+        public static string FormatCamelCase(string input, string delimiter = " ", bool capitalizeFirstCharacter = false)
+        {
+            if (String.IsNullOrEmpty(delimiter))
+            {
+                throw new ArgumentException("Delimiter can't be null or empty", "delimiter");
+            }
+
+            string result;
+            if (capitalizeFirstCharacter)
+            {
+                result = _formatCamelCaseCapitalizeRegex.Replace(input, m => EvaluateCamelCaseMatchWithCapitalization(m, delimiter));
+            }
+            else
+            {
+                var replacement = delimiter + "$1";
+                result = _formatCamelCaseRegex.Replace(input, replacement);
+            }
+
+            return result;
+        }
+
+        private static string EvaluateCamelCaseMatchWithCapitalization(Match m, string delimiter)
+        {
+            string result;
+
+            if (String.IsNullOrEmpty(m.Groups["LowerCaseChar"].Value))
+            {
+                result = delimiter + m.Groups[1].Value;
+            }
+            else
+            {
+                result = m.Groups["LowerCaseChar"].Value.ToUpper();
+            }
+
+            return result;
         }
 
         private static void PrefixSuffix(StringBuilder input, string prefixSuffix)
