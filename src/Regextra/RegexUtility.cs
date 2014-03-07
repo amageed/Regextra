@@ -8,6 +8,8 @@ namespace Regextra
 {
     public static class RegexUtility
     {
+        private static readonly Regex _trimWhitespacesRegex = new Regex(@"^\s+|\s+$|(\s)\1+", RegexOptions.Compiled);
+
         public static string[] Split(string input,
             string[] delimiters,
             RegexOptions regexOptions = RegexOptions.None,
@@ -65,6 +67,11 @@ namespace Regextra
             var split = Regex.Split(input, pattern, regexOptions);
             var result = RemoveEmptyEntries(split);
             return result;
+        }
+
+        public static string TrimWhitespaces(string input)
+        {
+            return _trimWhitespacesRegex.Replace(input, "$1");
         }
 
         private static void PrefixSuffix(StringBuilder input, string prefixSuffix)
