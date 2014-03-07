@@ -8,7 +8,7 @@ using Shouldly;
 namespace Regextra.Tests
 {
     [TestFixture]
-    public class RegexUtilityTests
+    public class RegexUtilitySplitDelimitersTests
     {
         [Test]
         public void Split_Throws_ArgumentException_For_Null_Delimiters()

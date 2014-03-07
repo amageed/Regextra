@@ -60,6 +60,13 @@ namespace Regextra
             return Split(input, delimiters, regexOptions, RegextraSplitOptions.RemoveEmptyEntries);
         }
 
+        public static object SplitRemoveEmptyEntries(string input, string pattern, RegexOptions regexOptions = RegexOptions.None)
+        {
+            var split = Regex.Split(input, pattern, regexOptions);
+            var result = RemoveEmptyEntries(split);
+            return result;
+        }
+
         private static void PrefixSuffix(StringBuilder input, string prefixSuffix)
         {
             input.Insert(0, prefixSuffix).Append(prefixSuffix);
