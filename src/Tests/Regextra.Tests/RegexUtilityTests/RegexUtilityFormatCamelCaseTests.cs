@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Threading;
 using NUnit.Framework;
 using Shouldly;
 
@@ -63,7 +65,31 @@ namespace Regextra.Tests.RegexUtilityTests
         [TestCase("camelCase", "Camel Case")]
         public void Can_Format_CamelCase_And_Capitalize_First_Character(string input, string expected)
         {
-            string result = RegexUtility.FormatCamelCase(input, capitalizeFirstCharacter: true);
+            string result = RegexUtility.FormatCamelCase(input, camelCaseOptions: CamelCaseOptions.CapitalizeFirstCharacter);
+
+            result.ShouldBe(expected);
+        }
+
+        [Test]
+        public void Turkish_I_Returned_With_Turkish_Culture_And_CapitalizeFirstCharacter_Option()
+        {
+            string input = "inTheZone";
+            string expected = "İn The Zone";
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("tr");
+
+            string result = RegexUtility.FormatCamelCase(input, camelCaseOptions: CamelCaseOptions.CapitalizeFirstCharacter);
+
+            result.ShouldBe(expected);
+        }
+
+        [Test]
+        public void Regular_I_Returned_With_Turkish_Culture_And_CapitalizeFirstCharacterInvariantCulture_Option()
+        {
+            string input = "invariantCulture";
+            string expected = "Invariant Culture";
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("tr");
+
+            string result = RegexUtility.FormatCamelCase(input, camelCaseOptions: CamelCaseOptions.CapitalizeFirstCharacterInvariantCulture);
 
             result.ShouldBe(expected);
         }

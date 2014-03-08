@@ -85,7 +85,7 @@ namespace Regextra
         /// <param name="input">CamelCase input to format</param>
         /// <param name="delimiter">Delimiter to use for formatting (space by default)</param>
         /// <param name="capitalizeFirstCharacter">Capitalize the first character for (lower) camelCase words (false by default)</param>
-        public static string FormatCamelCase(string input, string delimiter = " ", bool capitalizeFirstCharacter = false)
+        public static string FormatCamelCase(string input, string delimiter = " ", CamelCaseOptions camelCaseOptions = CamelCaseOptions.None)
         {
             if (String.IsNullOrEmpty(delimiter))
             {
@@ -93,9 +93,9 @@ namespace Regextra
             }
 
             string result;
-            if (capitalizeFirstCharacter)
+            if (camelCaseOptions.HasFlag(CamelCaseOptions.CapitalizeFirstCharacter) || camelCaseOptions.HasFlag(CamelCaseOptions.CapitalizeFirstCharacterInvariantCulture))
             {
-                result = _formatCamelCaseCapitalizeRegex.Replace(input, m => EvaluateCamelCaseMatchWithCapitalization(m, delimiter));
+                result = _formatCamelCaseCapitalizeRegex.Replace(input, m => EvaluateCamelCaseMatchWithCapitalization(m, delimiter, camelCaseOptions));
             }
             else
             {
@@ -106,13 +106,20 @@ namespace Regextra
             return result;
         }
 
-        private static string EvaluateCamelCaseMatchWithCapitalization(Match m, string delimiter)
+        private static string EvaluateCamelCaseMatchWithCapitalization(Match m, string delimiter, CamelCaseOptions options)
         {
             string result;
 
             if (m.Groups["LowerCaseChar"].Value != String.Empty)
             {
-                result = m.Groups["LowerCaseChar"].Value.ToUpper();
+                if (options.HasFlag(CamelCaseOptions.CapitalizeFirstCharacterInvariantCulture))
+                {
+                    result = m.Groups["LowerCaseChar"].Value.ToUpperInvariant();
+                }
+                else
+                {
+                    result = m.Groups["LowerCaseChar"].Value.ToUpper();
+                }
             }
             else
             {
