@@ -110,13 +110,13 @@ namespace Regextra
         {
             string result;
 
-            if (String.IsNullOrEmpty(m.Groups["LowerCaseChar"].Value))
+            if (m.Groups["LowerCaseChar"].Value != String.Empty)
             {
-                result = delimiter + m.Groups[1].Value;
+                result = m.Groups["LowerCaseChar"].Value.ToUpper();
             }
             else
             {
-                result = m.Groups["LowerCaseChar"].Value.ToUpper();
+                result = delimiter + m.Groups[1].Value;
             }
 
             return result;
