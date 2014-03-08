@@ -3,7 +3,7 @@ using System;
 namespace Regextra
 {
     [Flags]
-    public enum RegextraSplitOptions
+    public enum SplitOptions
     {
         None = 0,
         IncludeDelimiters = 1,

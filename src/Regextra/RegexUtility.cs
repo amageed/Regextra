@@ -15,7 +15,7 @@ namespace Regextra
         public static string[] Split(string input,
             string[] delimiters,
             RegexOptions regexOptions = RegexOptions.None,
-            RegextraSplitOptions splitOptions = RegextraSplitOptions.None)
+            SplitOptions splitOptions = SplitOptions.None)
         {
             if (delimiters == null || delimiters.Length == 0)
             {
@@ -25,21 +25,21 @@ namespace Regextra
             var pattern = new StringBuilder(String.Join("|", delimiters.Select(d => Regex.Escape(d))));
 
             // pattern building order matters: IncludeDelimiters must occur first if selected
-            if (splitOptions.HasFlag(RegextraSplitOptions.IncludeDelimiters))
+            if (splitOptions.HasFlag(SplitOptions.IncludeDelimiters))
             {
                 PrefixSuffix(pattern, "(", ")");
             }
-            if (splitOptions.HasFlag(RegextraSplitOptions.MatchWholeWords))
+            if (splitOptions.HasFlag(SplitOptions.MatchWholeWords))
             {
                 PrefixSuffix(pattern, @"\b");
             }
-            if (splitOptions.HasFlag(RegextraSplitOptions.TrimWhitespace))
+            if (splitOptions.HasFlag(SplitOptions.TrimWhitespace))
             {
                 PrefixSuffix(pattern, @"\s*");
             }
 
             string[] result = Regex.Split(input, pattern.ToString(), regexOptions);
-            if (splitOptions.HasFlag(RegextraSplitOptions.RemoveEmptyEntries))
+            if (splitOptions.HasFlag(SplitOptions.RemoveEmptyEntries))
             {
                 result = RemoveEmptyEntries(result);
             }
@@ -48,22 +48,22 @@ namespace Regextra
 
         public static string[] SplitIncludeDelimiters(string input, string[] delimiters, RegexOptions regexOptions = RegexOptions.None)
         {
-            return Split(input, delimiters, regexOptions, RegextraSplitOptions.IncludeDelimiters);
+            return Split(input, delimiters, regexOptions, SplitOptions.IncludeDelimiters);
         }
 
         public static string[] SplitMatchWholeWords(string input, string[] delimiters, RegexOptions regexOptions = RegexOptions.None)
         {
-            return Split(input, delimiters, regexOptions, RegextraSplitOptions.MatchWholeWords);
+            return Split(input, delimiters, regexOptions, SplitOptions.MatchWholeWords);
         }
 
         public static string[] SplitTrimWhitespace(string input, string[] delimiters, RegexOptions regexOptions = RegexOptions.None)
         {
-            return Split(input, delimiters, regexOptions, RegextraSplitOptions.TrimWhitespace);
+            return Split(input, delimiters, regexOptions, SplitOptions.TrimWhitespace);
         }
 
         public static string[] SplitRemoveEmptyEntries(string input, string[] delimiters, RegexOptions regexOptions = RegexOptions.None)
         {
-            return Split(input, delimiters, regexOptions, RegextraSplitOptions.RemoveEmptyEntries);
+            return Split(input, delimiters, regexOptions, SplitOptions.RemoveEmptyEntries);
         }
 
         public static object SplitRemoveEmptyEntries(string input, string pattern, RegexOptions regexOptions = RegexOptions.None)
