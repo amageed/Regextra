@@ -66,6 +66,7 @@
     <Compile Include="TemplateTests\Models\Person.cs" />
     <Compile Include="TemplateTests\TemplateNestedPropertyTests.cs" />
     <Compile Include="TemplateTests\TemplateTests.cs" />
+    <Compile Include="TemplateTests\TemplateTypeTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
