@@ -64,6 +64,7 @@
     <Compile Include="RegexUtilityTests\RegexUtilityMiscellaneousTests.cs" />
     <Compile Include="TemplateTests\Models\Address.cs" />
     <Compile Include="TemplateTests\Models\Person.cs" />
+    <Compile Include="TemplateTests\TemplateIFormatProviderTests.cs" />
     <Compile Include="TemplateTests\TemplateNestedPropertyTests.cs" />
     <Compile Include="TemplateTests\TemplateTests.cs" />
     <Compile Include="TemplateTests\TemplateTypeTests.cs" />
