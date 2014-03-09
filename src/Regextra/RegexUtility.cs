@@ -73,6 +73,22 @@ namespace Regextra
             return result;
         }
 
+        private static void PrefixSuffix(StringBuilder input, string prefixSuffix)
+        {
+            input.Insert(0, prefixSuffix).Append(prefixSuffix);
+        }
+
+        private static void PrefixSuffix(StringBuilder input, string prefix, string suffix)
+        {
+            input.Insert(0, prefix).Append(suffix);
+        }
+
+        private static string[] RemoveEmptyEntries(string[] input)
+        {
+            var result = input.Where(s => !String.IsNullOrEmpty(s)).ToArray();
+            return result;
+        }
+
         public static string TrimWhitespaces(string input)
         {
             var result = _trimWhitespacesRegex.Replace(input, "$1");
@@ -129,20 +145,42 @@ namespace Regextra
             return result;
         }
 
-        private static void PrefixSuffix(StringBuilder input, string prefixSuffix)
+        public static Dictionary<string, string>[] MatchesToNamedGroupsDictionaries(string input, string pattern, RegexOptions options = RegexOptions.None)
         {
-            input.Insert(0, prefixSuffix).Append(prefixSuffix);
+            Regex regex;
+            IEnumerable<string> groupNames;
+            CommonSetupForMatchesToNamedGroups(pattern, options, out regex, out groupNames);
+
+            var query = regex.Matches(input).Cast<Match>()
+                             .Select(m => groupNames.ToDictionary(g => g, g => m.Groups[g].Value));
+            return query.ToArray();
         }
 
-        private static void PrefixSuffix(StringBuilder input, string prefix, string suffix)
+        public static ILookup<string, string> MatchesToNamedGroupsLookup(string input, string pattern, RegexOptions options = RegexOptions.None)
         {
-            input.Insert(0, prefix).Append(suffix);
+            Regex regex;
+            IEnumerable<string> groupNames;
+            CommonSetupForMatchesToNamedGroups(pattern, options, out regex, out groupNames);
+
+            var query = from Match m in regex.Matches(input)
+                        from g in groupNames
+                        select Tuple.Create(g, m.Groups[g].Value);
+
+            var lookup = query.ToLookup(t => t.Item1, t => t.Item2);
+            return lookup;
         }
 
-        private static string[] RemoveEmptyEntries(string[] input)
+        private static void CommonSetupForMatchesToNamedGroups(string pattern, RegexOptions options, out Regex regex, out IEnumerable<string> groupNames)
         {
-            var result = input.Where(s => !String.IsNullOrEmpty(s)).ToArray();
-            return result;
+            options |= RegexOptions.ExplicitCapture;
+            regex = new Regex(pattern, options);
+
+            // skip default group "0"
+            groupNames = regex.GetGroupNames().Skip(1);
+            if (!groupNames.Any())
+            {
+                throw new FormatException("Pattern does not specify any named groups");
+            }
         }
     }
 }
