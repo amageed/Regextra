@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Regextra.TemplatePerformanceBenchmarks
+namespace Regextra.TemplateBenchmarks
 {
     public class BenchmarkGroup
     {

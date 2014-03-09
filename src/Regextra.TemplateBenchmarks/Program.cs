@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Regextra;
-using Regextra.TemplatePerformanceBenchmarks.Formatters;
-using Regextra.TemplatePerformanceBenchmarks.Models;
+using Regextra.TemplateBenchmarks.Formatters;
+using Regextra.TemplateBenchmarks.Models;
 using SmartFormat;
 
-namespace Regextra.TemplatePerformanceBenchmarks
+namespace Regextra.TemplateBenchmarks
 {
     class Program
     {
@@ -20,6 +20,7 @@ namespace Regextra.TemplatePerformanceBenchmarks
             Person = GetPerson();
             RunBenchmarksForSampleTemplate();
             RunBenchmarksForNestedSampleTemplate();
+            RunBenchmarksForDictionaryInput();
             Console.ReadLine();
         }
 
@@ -56,6 +57,25 @@ namespace Regextra.TemplatePerformanceBenchmarks
             };
 
             var group = new BenchmarkGroup("Nested Sample Template", ITERATION_COUNT, benchmarks);
+            group.Run();
+        }
+
+        private static void RunBenchmarksForDictionaryInput()
+        {
+            var template = "The access code is {Code} and the token is {Token:N}.";
+            var item = new Dictionary<string, Guid>()
+            {
+                { "Code", Guid.NewGuid() },
+                { "Token", Guid.NewGuid() }
+            };
+
+            var benchmarks = new List<Benchmark>
+            {
+                new Benchmark("Regextra Template", () => Template.Format(template, item)),
+                new Benchmark("SmartFormat.NET", () => template.FormatSmart(item))
+            };
+
+            var group = new BenchmarkGroup("Dictionary Input Template", ITERATION_COUNT, benchmarks);
             group.Run();
         }
 
