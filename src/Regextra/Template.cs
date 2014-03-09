@@ -69,7 +69,7 @@ namespace Regextra
             {
                 result = ObjectAccessor.Create(item)[property];
             }
-            
+
             return result;
         }
 
@@ -85,17 +85,15 @@ namespace Regextra
                 throw new MissingFieldException(item.GetType().Name, m.Groups[PROPERTY].Value);
             }
 
-            string property = null;
             if (m.Groups[FORMAT].Value != String.Empty)
             {
-                property = FormatProperty(current, m, provider);
+                string result = FormatProperty(current, m, provider);
+                return result;
             }
             else
             {
-                property = current.ToString();
+                return current.ToString();
             }
-
-            return property;
         }
 
         private static string GetNestedPropertyValue(object item, Match m, IFormatProvider provider)
@@ -117,7 +115,7 @@ namespace Regextra
             {
                 var chain = GetFailedPropertyChain(properties, index);
                 throw new MissingFieldException(chain.Item1, chain.Item2);
-            }            
+            }
 
             if (m.Groups[FORMAT].Value != String.Empty)
             {
