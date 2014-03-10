@@ -85,10 +85,9 @@ namespace Regextra.Tests
         {
             string input = "() Hello . World?";
             string[] delimiters = { "()", ".", "?" };
-            string[] expected = { "()", " Hello ", ".", " World", "?" };
-            var splitOptions = SplitOptions.IncludeDelimiters | SplitOptions.RemoveEmptyEntries;
+            string[] expected = { " Hello ", " World" };
 
-            var result = RegexUtility.Split(input, delimiters, splitOptions: splitOptions);
+            var result = RegexUtility.Split(input, delimiters, splitOptions: SplitOptions.RemoveEmptyEntries);
 
             result.ShouldBe(expected);
         }
@@ -98,10 +97,9 @@ namespace Regextra.Tests
         {
             string input = "Hello . World";
             string[] delimiters = { "." };
-            string[] expected = { "Hello", ".", "World" };
-            var splitOptions = SplitOptions.IncludeDelimiters | SplitOptions.TrimWhitespace;
+            string[] expected = { "Hello", "World" };
 
-            var result = RegexUtility.Split(input, delimiters, splitOptions: splitOptions);
+            var result = RegexUtility.Split(input, delimiters, splitOptions: SplitOptions.TrimWhitespace);
 
             result.ShouldBe(expected);
         }
