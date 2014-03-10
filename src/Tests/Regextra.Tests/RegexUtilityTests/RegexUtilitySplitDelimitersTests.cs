@@ -124,10 +124,9 @@ namespace Regextra.Tests
         {
             string input = "StackOverflow Stack OverStack";
             string[] delimiters = { "Stack" };
-            string[] expected = { "StackOverflow ", "Stack", " OverStack" };
-            var splitOptions = SplitOptions.IncludeDelimiters | SplitOptions.MatchWholeWords;
+            string[] expected = { "StackOverflow ", " OverStack" };
 
-            var result = RegexUtility.Split(input, delimiters, splitOptions: splitOptions);
+            var result = RegexUtility.Split(input, delimiters, splitOptions: SplitOptions.MatchWholeWords);
 
             result.ShouldBe(expected);
         }
