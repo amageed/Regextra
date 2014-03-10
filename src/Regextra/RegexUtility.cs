@@ -8,7 +8,7 @@ namespace Regextra
 {
     public static class RegexUtility
     {
-        private static readonly Regex _trimWhitespacesRegex = new Regex(@"^\s+|\s+$|(\s)\1+", RegexOptions.Compiled);
+        private static readonly Regex _trimWhitespaceRegex = new Regex(@"^\s+|\s+$|(\s)\1+", RegexOptions.Compiled);
         private static readonly Regex _formatCamelCaseRegex = new Regex(@"\s*(?<!^)([A-Z][a-z]|(?<=[a-z])[A-Z]|(?<=[A-Za-z])[0-9])\s*", RegexOptions.Compiled);
         private static readonly Regex _formatCamelCaseCapitalizeRegex = new Regex(@"\b(?<LowerCaseChar>[a-z])(?=[a-z]*[A-Z])|\s*(?<!^)([A-Z][a-z]|(?<=[a-z])[A-Z]|(?<=[a-zA-Z])[0-9])\s*", RegexOptions.Compiled);
 
@@ -89,9 +89,9 @@ namespace Regextra
             return result;
         }
 
-        public static string TrimWhitespaces(string input)
+        public static string TrimWhitespace(string input)
         {
-            var result = _trimWhitespacesRegex.Replace(input, "$1");
+            var result = _trimWhitespaceRegex.Replace(input, "$1");
             return result;
         }
 

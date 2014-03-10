@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Regextra.TemplatePerformanceBenchmarks.Models
+namespace Regextra.TemplateBenchmarks.Models
 {
     public class Address
     {

@@ -32,7 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>Regextra.TemplatePerformanceBenchmarks.Program</StartupObject>
+    <StartupObject>Regextra.TemplateBenchmarks.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SmartFormat">

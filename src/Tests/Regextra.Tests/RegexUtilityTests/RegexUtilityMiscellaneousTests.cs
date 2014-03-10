@@ -35,9 +35,9 @@ namespace Regextra.Tests.RegexUtilityTests
         }
 
         [Test]
-        public void Trim_Whitespaces_Throws_Exception_For_Null_Input_From_Regex_Class()
+        public void Trim_Whitespace_Throws_Exception_For_Null_Input_From_Regex_Class()
         {
-            var ex = Should.Throw<ArgumentNullException>(() => RegexUtility.TrimWhitespaces(null));
+            var ex = Should.Throw<ArgumentNullException>(() => RegexUtility.TrimWhitespace(null));
 
             ex.ParamName.ShouldBe("input");
         }
@@ -46,11 +46,11 @@ namespace Regextra.Tests.RegexUtilityTests
         [TestCase("  Hello World")]
         [TestCase("Hello    World")]
         [TestCase("   Hello    World   ")]
-        public void Can_Trim_Whitespaces_In_Given_Inputs(string input)
+        public void Can_Trim_Whitespace_In_Given_Inputs(string input)
         {
             var expected = "Hello World";
 
-            var result = RegexUtility.TrimWhitespaces(input);
+            var result = RegexUtility.TrimWhitespace(input);
 
             result.ShouldBe(expected);
         }

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using Regextra;
-using Regextra.TemplatePerformanceBenchmarks.Formatters;
-using Regextra.TemplatePerformanceBenchmarks.Models;
+using Regextra.TemplateBenchmarks.Formatters;
+using Regextra.TemplateBenchmarks.Models;
 using SmartFormat;
 
-namespace Regextra.TemplatePerformanceBenchmarks
+namespace Regextra.TemplateBenchmarks
 {
     class Program
     {
@@ -20,6 +21,9 @@ namespace Regextra.TemplatePerformanceBenchmarks
             Person = GetPerson();
             RunBenchmarksForSampleTemplate();
             RunBenchmarksForNestedSampleTemplate();
+            RunBenchmarksForDictionaryInput();
+            RunBenchmarksForExpandoObject();
+            RunBenchmarksForDynamicPerson();
             Console.ReadLine();
         }
 
@@ -56,6 +60,56 @@ namespace Regextra.TemplatePerformanceBenchmarks
             };
 
             var group = new BenchmarkGroup("Nested Sample Template", ITERATION_COUNT, benchmarks);
+            group.Run();
+        }
+
+        private static void RunBenchmarksForDictionaryInput()
+        {
+            var template = "The access code is {Code} and the token is {Token:N}.";
+            var item = new Dictionary<string, Guid>()
+            {
+                { "Code", Guid.NewGuid() },
+                { "Token", Guid.NewGuid() }
+            };
+
+            var benchmarks = new List<Benchmark>
+            {
+                new Benchmark("Regextra Template", () => Template.Format(template, item)),
+                new Benchmark("SmartFormat.NET", () => template.FormatSmart(item))
+            };
+
+            var group = new BenchmarkGroup("Dictionary Input Template", ITERATION_COUNT, benchmarks);
+            group.Run();
+        }
+
+        public static void RunBenchmarksForExpandoObject()
+        {
+            dynamic item = new ExpandoObject();
+            item.Id = Person.Id;
+            item.Name = Person.Name;
+            item.DateOfBirth = Person.DateOfBirth;
+
+            var benchmarks = new List<Benchmark>
+            {
+                new Benchmark("Regextra Template", () => Template.Format(sampleTemplate, item)),
+                new Benchmark("SmartFormat.NET", () => Smart.Format(sampleTemplate, item))
+            };
+
+            var group = new BenchmarkGroup("ExpandoObject Template", ITERATION_COUNT, benchmarks);
+            group.Run();
+        }
+
+        private static void RunBenchmarksForDynamicPerson()
+        {
+            dynamic item = Person;
+
+            var benchmarks = new List<Benchmark>
+            {
+                new Benchmark("Regextra Template w/FastMember", () => Template.Format(sampleNestedTemplate, item)),
+                new Benchmark("SmartFormat.NET", () => Smart.Format(sampleNestedTemplate, item))
+            };
+
+            var group = new BenchmarkGroup("Dynamic Person Template", ITERATION_COUNT, benchmarks);
             group.Run();
         }
 

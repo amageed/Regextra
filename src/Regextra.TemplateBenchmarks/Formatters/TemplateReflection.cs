@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace Regextra.TemplatePerformanceBenchmarks.Formatters
+namespace Regextra.TemplateBenchmarks.Formatters
 {
     public static class TemplateReflection
     {
