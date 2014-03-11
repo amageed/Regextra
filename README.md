@@ -2,11 +2,17 @@
 
 Regextra is a small library built to address problems that are handily solved by regular expressions.
 
-Currently, the library offers a *Passphrase Regex Builder* and *Template Formatting*. Future plans include methods for common string manipulation scenarios.
+Currently, the library includes the following features:
+
+  - Passphrase Regex Builder 
+  - Named Template Formatting
+  - Useful regex/string methods
 
 ## How do I get started?
 
-Check out the [wiki](https://github.com/amageed/Regextra/wiki) and visit the project's [demo site](http://softwareninjaneer.com/regextra) for a chance to try out some client-side validation (using the patterns produced by the `PassphraseRegex` builder). Also, the extensive [test suite](https://github.com/amageed/Regextra/tree/master/src/Tests) is worth a glance.
+  - Check out the [wiki](https://github.com/amageed/Regextra/wiki)
+  - Visit the project's [demo site](http://softwareninjaneer.com/regextra) for a chance to try out some client-side validation (using the patterns produced by the `PassphraseRegex` builder)
+  - The extensive [test suite](https://github.com/amageed/Regextra/tree/master/src/Tests) is worth a glance
 
 Regextra is available via [NuGet](https://www.nuget.org/packages/Regextra/):
 
@@ -44,12 +50,15 @@ The following code generates a pattern to enforce a password of 8-25 characters 
 	    // check the regex parse exception message for the generated pattern
 	    Console.WriteLine(result.Error);
 	}
+
+Refer to the [PassphraseRegex wiki](https://github.com/amageed/Regextra/wiki/PassphraseRegex:-building-passphrase-validation-patterns) for further details and examples.
     
 ## Template Formatting
 
 Template formatting allows you to perform named formatting on a string template using an object's matching properties. It's available via the static `Template.Format` method and the string extension method, `FormatTemplate`. The formatter features:
 
-  - Nested Properties
+  - Nested properties formatting
+  - Dictionary formatting
   - Standard/Custom string formatting
   - Escaping of properties
   - Detailed exception messages to pinpoint missing properties
@@ -75,6 +84,29 @@ Template formatting allows you to perform named formatting on a string template 
 The result of the code is:
 
 > We just shipped your order of 'Widget', placed on 2/28/2014. Your {credit} card will be billed $1,500.00.
+
+Refer to the [Template wiki](https://github.com/amageed/Regextra/wiki/Template:-named-formatting) for further details and examples.
+
+## RegexUtility Class
+
+This static class features a couple of helpful methods, such as:
+
+  - **Split Methods**
+    - `Split`
+    - `SplitRemoveEmptyEntries`
+    - `SplitIncludeDelimiters`
+    - `SplitMatchWholeWords`
+    - `SplitTrimWhitespace`
+
+  - **Formatting Methods**
+    - `TrimWhitespace`
+    - `FormatCamelCase`
+
+  - **Named Groups Conversion Methods**
+    - `MatchesToNamedGroupsDictionaries`
+    - `MatchesToNamedGroupsLookup`
+
+Refer to the [RegexUtility wiki](https://github.com/amageed/Regextra/wiki/RegexUtility:-miscellaneous-string-manipulation-and-regex-operations) for further details and examples.
 
 ## OSS Libraries Used
 
